@@ -13,7 +13,9 @@ import {
   LocalAccountSigner,
   deepHexlify,
   getUserOperationHash,
+  type UserOperationRequest,
 } from "@alchemy/aa-core";
+
 import { optimismGoerli } from "viem/chains";
 import { daappConfigurations } from "../../configs/clientConfigs";
 
@@ -30,9 +32,8 @@ const SmartContractAddress = "0xaA3DCFDC2c40409de1Cca71F985413018dD0a7B0";
 const SessionKeyAddress = "0xC275b7e36faF2eBdaBf2B256443e88d911fd822e";
 // const SessionKeysSmartContractAddress = "0xad3DB677F7Fb76504CdAf905CBaBE7C68898ba01";
 
-const createContract = async (ownerResult: SimpleSmartAccountSignerResult) => {
+const createContract = async (owner: SmartAccountSigner) => {
   //owner from Private Key
-  const owner: SmartAccountSigner = ownerResult.owner!;
   const chain: Chain = optimismGoerli;
 
   // 2. initialize the provider and connect it to the account
@@ -78,10 +79,7 @@ const createContract = async (ownerResult: SimpleSmartAccountSignerResult) => {
   console.log("mintDeployTxnHash: ", mintDeployTxnHash);
 };
 
-const registerSessionkey = async (
-  ownerResult: SimpleSmartAccountSignerResult
-) => {
-  let owner: SmartAccountSigner = ownerResult.owner!;
+const registerSessionkey = async (owner: SmartAccountSigner) => {
   const chain: Chain = optimismGoerli;
 
   // 2. initialize the provider and connect it to the account
@@ -115,10 +113,7 @@ const registerSessionkey = async (
   console.log("hash: ", hash);
 };
 
-const revokeSessionkey = async (
-  ownerResult: SimpleSmartAccountSignerResult
-) => {
-  let owner: SmartAccountSigner = ownerResult.owner!;
+const revokeSessionkey = async (owner: SmartAccountSigner) => {
   const chain: Chain = optimismGoerli;
 
   // 2. initialize the provider and connect it to the account
@@ -151,11 +146,8 @@ const revokeSessionkey = async (
   });
   console.log("hash: ", hash);
 };
-const mintBySessionkey = async (
-  ownerResult: SimpleSmartAccountSignerResult
-) => {
-  //owner from Private Key
-  const owner: SmartAccountSigner = ownerResult.owner!;
+
+const mintBySessionkey = async (owner: SmartAccountSigner) => {
   const chain: Chain = optimismGoerli;
 
   // 2. initialize the provider and connect it to the account
@@ -187,7 +179,9 @@ const mintBySessionkey = async (
       args: [SmartContractAddress],
     }),
   });
-  const request = deepHexlify(uoStruct);
+  const request: UserOperationRequest = deepHexlify(
+    uoStruct
+  ) as UserOperationRequest;
   // if (!isValidRequest(request)) {
   //   // this pretty prints the uo
   //   throw new Error(
@@ -199,20 +193,20 @@ const mintBySessionkey = async (
   //   );
   // }
 
-  request.signature = (await sessionKey.signMessage(
+  request.signature = await sessionKey.signMessage(
     getUserOperationHash(
       request,
       EntryPointAddress as `0x${string}`,
       BigInt(chain.id)
     )
-  )) as `0x${string}`;
+  );
 
   const hash = await provider.rpcClient.sendUserOperation(
     request,
     EntryPointAddress
   );
   // console.log("hash: ", hash);
-  const waitHash = await provider.waitForUserOperationTransaction(hash as Hash);
+  const waitHash = await provider.waitForUserOperationTransaction(hash);
   console.log("waitHash: ", waitHash);
 };
 
@@ -237,28 +231,36 @@ export function CreateContractWalletPage() {
         </Heading>
         <Button
           onClick={() => {
-            createContract(ownerResult);
+            createContract(ownerResult.owner).catch((e) => {
+              console.error(e);
+            });
           }}
         >
           Setup Your Wallet
         </Button>
         <Button
           onClick={() => {
-            registerSessionkey(ownerResult);
+            registerSessionkey(ownerResult.owner).catch((e) => {
+              console.error(e);
+            });
           }}
         >
           Register Session Key
         </Button>
         <Button
           onClick={() => {
-            revokeSessionkey(ownerResult);
+            revokeSessionkey(ownerResult.owner).catch((e) => {
+              console.error(e);
+            });
           }}
         >
           Revoke Session Key
         </Button>
         <Button
           onClick={() => {
-            mintBySessionkey(ownerResult);
+            mintBySessionkey(ownerResult.owner).catch((e) => {
+              console.error(e);
+            });
           }}
         >
           Mint By Session Key
