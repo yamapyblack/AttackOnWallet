@@ -1,3 +1,5 @@
+.DS_Store
+
 node_modules
 .env
 .envrc
@@ -9,4 +11,3 @@ typechain-types
 # Hardhat files
 cache
 artifacts
-

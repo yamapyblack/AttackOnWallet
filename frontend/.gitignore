@@ -1,0 +1,19 @@
+*.local
+.eslintcache
+.next
+.pnpm-debug.log*
+bench
+dist
+node_modules
+tsconfig*.tsbuildinfo
+
+# local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.envrc
+.npmrc
+lerna-debug.log
+.tool-versions
