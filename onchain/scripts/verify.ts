@@ -1,9 +1,12 @@
-import env, { ethers } from "hardhat";
+import env from "hardhat";
+import { getAddresses } from "./addresses";
 
 async function main() {
+  const a = getAddresses()!;
+
   await env.run("verify:verify", {
-    address: "0x110Dd2EE1776198f3CF62e4906feD9B28b8AeA49",
-    constructorArguments: ["0x184c5F5fD4280e00234B12ef047cDb87E8aFff43"],
+    address: a.SessionKeyAccountFactory,
+    constructorArguments: [a.EntryPoint],
   });
 }
 
