@@ -1,13 +1,13 @@
 import { ethers } from "hardhat";
-import { SessionKeyAccountFactory } from "../typechain-types/contracts/wallets/SessionKeyAccountFactory";
+import { AoWAccountFactory } from "../typechain-types/contracts/wallets/AoWAccountFactory";
 import { getAddresses } from "./addresses";
 
 async function main() {
   const a = getAddresses()!;
   const factory = (await ethers.getContractAt(
-    "SessionKeyAccountFactory",
-    a.SessionKeyAccountFactory
-  )) as SessionKeyAccountFactory;
+    "AoWAccountFactory",
+    a.AoWAccountFactory
+  )) as AoWAccountFactory;
 
   const tx = await factory.createAccount(a.Deployer, 1, {
     value: ethers.parseEther("0.1"),

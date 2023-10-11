@@ -23,14 +23,9 @@ const RpcUrl = daappConfigurations[optimismGoerli.id]!.rpcUrl;
 
 const NftContractAddress = "0x835629117Abb8cfe20a2e8717C691905A4725b7c";
 const EntryPointAddress = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
-// const SimpleAccountFactoryAddress = "0x9406cc6185a346906296840746125a0e44976454";
-// const SmartContractAddress = "0x93d5CFE1Dce27Daf390868BCC9003d9bc722d215";
-
 const SimpleAccountFactoryAddress =
   "0xc1777F38F660C5b381fb69904058636962C1fc8B";
-const SmartContractAddress = "0xaA3DCFDC2c40409de1Cca71F985413018dD0a7B0";
 const SessionKeyAddress = "0xC275b7e36faF2eBdaBf2B256443e88d911fd822e";
-// const SessionKeysSmartContractAddress = "0xad3DB677F7Fb76504CdAf905CBaBE7C68898ba01";
 
 const createContract = async (owner: SmartAccountSigner) => {
   //owner from Private Key
@@ -68,12 +63,12 @@ const createContract = async (owner: SmartAccountSigner) => {
 
   const mintDeployTxnHash = await provider.sendTransaction({
     // from: await owner.getAddress(),
-    from: SmartContractAddress,
+    from: smartAccountAddress,
     to: NftContractAddress,
     data: encodeFunctionData({
       abi: NFTContractABI.abi,
       functionName: "mintTo",
-      args: [SmartContractAddress],
+      args: [smartAccountAddress],
     }),
   });
   console.log("mintDeployTxnHash: ", mintDeployTxnHash);
