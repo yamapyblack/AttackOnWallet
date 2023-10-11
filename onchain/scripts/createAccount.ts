@@ -9,11 +9,10 @@ async function main() {
     a.SessionKeyAccountFactory
   )) as SessionKeyAccountFactory;
 
-  const tx = await factory.createAccount(a.Deployer, 1);
+  const tx = await factory.createAccount(a.Deployer, 1, {
+    value: ethers.parseEther("0.1"),
+  });
   console.log(tx);
-
-  const accountAddress = await factory.getAddress(a.Deployer, 1);
-  console.log("accountAddress:", accountAddress);
 }
 
 main().catch((error) => {

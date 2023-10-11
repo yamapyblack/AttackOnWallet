@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.12;
+import {SessionKeyAccountFactory, SessionKeyAccount, IEntryPoint} from "./SessionKeyAccountFactory.sol";
+
+interface Mintable {
+    function mint(address to) external;
+}
+
+contract AoWAccountFactory is SessionKeyAccountFactory {
+    address public immutable nft;
+
+    constructor(
+        IEntryPoint _entryPoint,
+        address _nft
+    ) SessionKeyAccountFactory(_entryPoint) {
+        nft = _nft;
+    }
+
+    function createAccount(
+        address owner,
+        uint256 salt
+    ) public payable override returns (SessionKeyAccount ret) {
+        ret = super.createAccount(owner, salt);
+
+        //initial gas depoist
+        if (msg.value > 0) {
+            payable(address(ret)).transfer(msg.value);
+        }
+
+        //mint nft
+        Mintable(nft).mint(address(ret));
+    }
+}
