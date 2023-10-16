@@ -1,7 +1,7 @@
 import { Box, Code, Text } from "@chakra-ui/react";
 import { Chain } from "viem";
 import { polygonMumbai, sepolia } from "viem/chains";
-import { toast } from "~/utils/toast";
+import { toast } from "~/clients/toast";
 
 export function RequestFunds({
   chain,

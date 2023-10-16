@@ -7,6 +7,7 @@ import {
   SmartAccountProvider,
   type SmartAccountSigner,
 } from "@alchemy/aa-core";
+import { CreateAccount } from "./CreateAccount";
 
 import { optimismGoerli } from "viem/chains";
 import { daappConfigurations } from "../../configs/clientConfigs";
@@ -59,15 +60,7 @@ export function CreatingPage() {
           If you have a gas manager policy configured you can check the box
           below.
         </Heading>
-        <Button
-          onClick={() => {
-            createContract(ownerResult.owner).catch((e) => {
-              console.error(e);
-            });
-          }}
-        >
-          Mint
-        </Button>
+        <CreateAccount />
       </VStack>
     );
   } else {
