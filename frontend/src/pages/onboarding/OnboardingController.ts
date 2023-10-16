@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { encodeFunctionData } from "viem";
 import { useAccount, useNetwork, type Chain } from "wagmi";
 import { localSmartContractStore } from "~/utils/localStorage";
-import { NFTContractABI } from "../../common/nftContract";
+import { NFTContractABI } from "../../common/nftContractAbi";
 import {
   DAAppConfiguration,
   daappConfigurations,

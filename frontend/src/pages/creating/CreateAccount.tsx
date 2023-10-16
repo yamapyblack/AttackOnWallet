@@ -8,13 +8,13 @@ import {
 import { parseEther } from "viem";
 import { localSmartContractStore } from "~/utils/localStorage";
 import { useRouter } from "next/router";
-
-const AccountFactoryAddress = "0xc9966401164FEd576Bb9f56E67E87d98663FD5a2";
+import { getAddresses } from "../../utils/getAddresses";
 
 export function CreateAccount() {
   const router = useRouter();
   const { address: owner } = useAccount();
-  const { chain } = useNetwork();
+  const { chain } = useNetwork()!;
+  const addresses = getAddresses(chain.id!)!;
 
   const {
     config,
@@ -22,7 +22,7 @@ export function CreateAccount() {
     isError: isPrepareError,
     data: prepareData,
   } = usePrepareContractWrite({
-    address: AccountFactoryAddress,
+    address: addresses.AccountFactoryAddress,
     abi: [
       {
         inputs: [
