@@ -11,6 +11,7 @@ import { ProfilePage } from "~/pages/profile/ProfilePage";
 import { ConnectPage } from "~/pages/connect/ConnectPage";
 import { LoadingScreen } from "../shared/LoadingScreen";
 import { useAppState } from "~/utils/appState";
+import { londrinaSolid } from "~/common/fonts";
 
 function Screen() {
   const appState = useAppState();
@@ -34,13 +35,15 @@ function Screen() {
 
 export default function RootScreen() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider>
-        <WalletContext>
-          <Screen />
-        </WalletContext>
-      </ChakraProvider>
-      <ToastContainer />
-    </QueryClientProvider>
+    <main className={londrinaSolid.className}>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider>
+          <WalletContext>
+            <Screen />
+          </WalletContext>
+        </ChakraProvider>
+        <ToastContainer />
+      </QueryClientProvider>
+    </main>
   );
 }

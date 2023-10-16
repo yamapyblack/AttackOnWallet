@@ -1,4 +1,12 @@
-import { Button, Heading, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Text,
+  Box,
+  Image,
+  Progress,
+  Flex,
+  VStack,
+} from "@chakra-ui/react";
 import { useAccount, type Chain } from "wagmi";
 import { useSimpleAccountSigner } from "~/utils/simpleAccountSigner";
 import { LoadingScreen } from "~/pages/shared/LoadingScreen";
@@ -41,25 +49,80 @@ const createContract = async (owner: SmartAccountSigner) => {
   console.log("smartAccountAddress: ", smartAccountAddress);
 };
 
+const steps = [
+  { title: "First", description: "Contact Info" },
+  { title: "Second", description: "Date & Time" },
+  { title: "Third", description: "Select Rooms" },
+];
+
 export function CreatingPage() {
   const { isConnected } = useAccount();
   const ownerResult = useSimpleAccountSigner();
   if (isConnected && !ownerResult.isLoading) {
     return (
-      <VStack
-        height="100%"
-        width="100%"
-        alignItems="center"
-        justifyContent="center"
-        gap={5}
-      >
-        <Heading>Welcome!</Heading>
-        <Heading size="sm" textAlign="center">
+      <VStack>
+        <Text fontSize={30} textAlign="center">
           Click below to get started.
           <br />
           If you have a gas manager policy configured you can check the box
           below.
-        </Heading>
+        </Text>
+        <Text mt={6} fontSize={32} textAlign="center">
+          yamapy
+        </Text>
+        <Flex mt={4} justify="center">
+          <Image alt="pokemon" w={300} src="/noun.png" />
+        </Flex>
+        <Box mt={4} mb={4}>
+          <Flex w={300} justifyContent="between">
+            <Box w={10}>
+              <Text>HP</Text>
+            </Box>
+            <Box pt={2} w={260}>
+              <Progress size="sm" value={50} />
+            </Box>
+          </Flex>
+          <Flex w={300} justifyContent="between">
+            <Box w={10}>
+              <Text>HP</Text>
+            </Box>
+            <Box pt={2} w={260}>
+              <Progress size="sm" value={50} />
+            </Box>
+          </Flex>
+          <Flex w={300} justifyContent="between">
+            <Box w={10}>
+              <Text>HP</Text>
+            </Box>
+            <Box pt={2} w={260}>
+              <Progress size="sm" value={50} />
+            </Box>
+          </Flex>
+          <Flex w={300} justifyContent="between">
+            <Box w={10}>
+              <Text>HP</Text>
+            </Box>
+            <Box pt={2} w={260}>
+              <Progress size="sm" value={50} />
+            </Box>
+          </Flex>
+          <Flex w={300} justifyContent="between">
+            <Box w={10}>
+              <Text>HP</Text>
+            </Box>
+            <Box pt={2} w={260}>
+              <Progress size="sm" value={50} />
+            </Box>
+          </Flex>
+          <Flex w={300} justifyContent="between">
+            <Box w={10}>
+              <Text>HP</Text>
+            </Box>
+            <Box pt={2} w={260}>
+              <Progress size="sm" value={50} />
+            </Box>
+          </Flex>
+        </Box>
         <CreateAccount />
       </VStack>
     );

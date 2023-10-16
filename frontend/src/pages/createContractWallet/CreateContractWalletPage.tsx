@@ -18,7 +18,7 @@ import {
 
 import { optimismGoerli } from "viem/chains";
 import { daappConfigurations } from "../../configs/clientConfigs";
-import { getAddresses } from "../../utils/getAddresses";
+import { getAddresses } from "../../common/getAddresses";
 
 const RpcUrl = daappConfigurations[optimismGoerli.id]!.rpcUrl;
 

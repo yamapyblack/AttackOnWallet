@@ -1,3 +1,4 @@
+import { Button, Text, VStack, Progress } from "@chakra-ui/react";
 import {
   usePrepareContractWrite,
   useContractWrite,
@@ -8,13 +9,13 @@ import {
 import { parseEther } from "viem";
 import { localSmartContractStore } from "~/utils/localStorage";
 import { useRouter } from "next/router";
-import { getAddresses } from "../../utils/getAddresses";
+import { getAddresses } from "../../common/getAddresses";
 
 export function CreateAccount() {
   const router = useRouter();
   const { address: owner } = useAccount();
-  const { chain } = useNetwork()!;
-  const addresses = getAddresses(chain.id!)!;
+  const { chain } = useNetwork();
+  const addresses = getAddresses(chain?.id!)!;
 
   const {
     config,
@@ -70,10 +71,10 @@ export function CreateAccount() {
   });
 
   return (
-    <div>
-      <button disabled={isLoading} onClick={() => write?.()}>
-        {isLoading ? "Minting..." : "Mint desu"}
-      </button>
+    <VStack justify="center">
+      <Button disabled={isLoading} onClick={() => write?.()}>
+        {isLoading ? "Minting..." : "Mint 0.1 ETH"}
+      </Button>
       {isSuccess && (
         <div>
           Successfully minted your NFT!
@@ -85,6 +86,6 @@ export function CreateAccount() {
       {(isPrepareError || isError) && (
         <div>Error: {(prepareError || error)?.message}</div>
       )}
-    </div>
+    </VStack>
   );
 }
