@@ -1,5 +1,5 @@
 import axios from "axios";
-import { OwnedNFTsResponse } from "../declarations/api";
+import { OwnedNFTsResponse } from "../../common/api";
 
 export async function callEndpoint<T>(
   method: "GET" | "POST" | "PUT" | "DELETE",

@@ -6,7 +6,7 @@ import {
   useNetwork,
 } from "wagmi";
 import { parseEther } from "viem";
-import { localSmartContractStore } from "~/clients/localStorage";
+import { localSmartContractStore } from "~/utils/localStorage";
 import { useRouter } from "next/router";
 
 const AccountFactoryAddress = "0xc9966401164FEd576Bb9f56E67E87d98663FD5a2";

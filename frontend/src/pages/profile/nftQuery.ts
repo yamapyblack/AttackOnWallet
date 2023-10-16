@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getNFTs } from "../../http/endpoints";
+import { getNFTs } from "../../utils/http/endpoints";
 
 export function useNFTsQuery(ethAddress?: string, chainId?: number) {
   return useQuery(["nfts", ethAddress, chainId], () => {

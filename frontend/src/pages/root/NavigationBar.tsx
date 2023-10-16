@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { AppState } from "~/clients/appState";
+import { AppState } from "~/utils/appState";
 
 export default function NavigationBar({ appState }: { appState: AppState }) {
   return (

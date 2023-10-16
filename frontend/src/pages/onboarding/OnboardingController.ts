@@ -3,13 +3,13 @@ import {
   SimpleSmartContractAccount,
   SmartAccountProvider,
   createPublicErc4337Client,
-  type SmartAccountSigner
+  type SmartAccountSigner,
 } from "@alchemy/aa-core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { encodeFunctionData } from "viem";
 import { useAccount, useNetwork, type Chain } from "wagmi";
-import { localSmartContractStore } from "~/clients/localStorage";
-import { NFTContractABI } from "../../clients/nftContract";
+import { localSmartContractStore } from "~/utils/localStorage";
+import { NFTContractABI } from "../../common/nftContract";
 import {
   DAAppConfiguration,
   daappConfigurations,
@@ -119,7 +119,6 @@ const onboardingStepHandlers: Record<
         rpcClient: provider,
       });
     });
-
 
     const smartAccountAddress = await baseSigner.getAddress();
     if (context.useGasManager) {

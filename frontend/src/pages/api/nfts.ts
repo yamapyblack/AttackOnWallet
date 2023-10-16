@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { daappConfigurations } from "~/configs/clientConfigs";
 import { getApiUrl } from "~/configs/serverConfigs";
-import { callEndpoint } from "~/http/http";
+import { callEndpoint } from "~/utils/http/http";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const {
@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (!address) {
-      throw new Error('address is required')
+      throw new Error("address is required");
     }
 
     const contractAddress =

@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { memo, useCallback } from "react";
 import NftSection from "./NftSection";
-import { useAppState } from "../../clients/appState";
+import { useAppState } from "../../utils/appState";
 import { useNetwork } from "wagmi";
 import { base, baseGoerli } from "viem/chains";
 

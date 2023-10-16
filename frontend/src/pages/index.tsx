@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 const RootScreen = dynamic(
   () => {
-    return import("~/surfaces/root/RootScreen");
+    return import("~/pages/root/RootScreen");
   },
   { ssr: false }
 );

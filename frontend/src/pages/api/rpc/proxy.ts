@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getApiUrl } from "~/configs/serverConfigs";
-import { callEndpoint } from "~/http/http";
+import { callEndpoint } from "~/utils/http/http";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { chainId } = req.query;

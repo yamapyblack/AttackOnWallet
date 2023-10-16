@@ -1,4 +1,4 @@
-import { OwnedNFTsResponse } from "../declarations/api";
+import { OwnedNFTsResponse } from "../../common/api";
 import { callEndpoint } from "./http";
 
 export function getNFTs(
