@@ -1,0 +1,46 @@
+/* styles.css or equivalent file */
+@keyframes blinking {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shaking {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.shaking {
+  animation: shaking 1s ease-in-out;
+}
+
+.green-beam {
+  width: 60px;
+  height: calc(50% - 90px);  /* Assuming the two images are spaced equally in a container and the beam starts from the center of one image and ends at the center of the other */
+  background: radial-gradient(circle at center, #90EE90, #006400); /* Pale green in the center and dark green at the edges */
+  opacity: 0;
+  position: absolute;
+  left: 50%; 
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%); 
+  z-index: 1; 
+  border-left: 2px solid #004d00; 
+  border-right: 2px solid #004d00; 
+}
+
+@keyframes beamEffect {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-50%);
+  }
+}
+
+.beam-animation {
+  animation: beamEffect 1s forwards;
+}

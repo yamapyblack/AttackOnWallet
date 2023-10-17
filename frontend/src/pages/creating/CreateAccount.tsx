@@ -51,14 +51,14 @@ export function CreateAccount() {
       },
     ],
     functionName: "createAccount",
-    args: [owner, BigInt(6)],
+    args: [owner, BigInt(7)],
     value: parseEther("0.1"),
   });
 
   const { data, error, isError, write } = useContractWrite(config);
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
-    onSuccess() {
+    onSuccess(data) {
       console.log("prepareData", prepareData?.result);
       localSmartContractStore.addSmartContractAccount(
         owner as string,

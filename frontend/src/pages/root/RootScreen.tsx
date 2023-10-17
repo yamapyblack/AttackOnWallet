@@ -8,6 +8,7 @@ import { OnboardingPage } from "../onboarding/OnboardingPage";
 import { CreateContractWalletPage } from "../createContractWallet/CreateContractWalletPage";
 import { CreatingPage } from "../creating/CreatingPage";
 import { ProfilePage } from "~/pages/profile/ProfilePage";
+import { BattlePage } from "~/pages/battle/BattlePage";
 import { ConnectPage } from "~/pages/connect/ConnectPage";
 import { LoadingScreen } from "../shared/LoadingScreen";
 import { useAppState } from "~/utils/appState";
@@ -19,7 +20,7 @@ function Screen() {
     <>
       <NavigationBar appState={appState} />
       {appState.state === "HAS_SCW" ? (
-        <ProfilePage />
+        <BattlePage />
       ) : appState.state === "NO_SCW" ? (
         <CreatingPage />
       ) : appState.state === "UNCONNECTED" ? (

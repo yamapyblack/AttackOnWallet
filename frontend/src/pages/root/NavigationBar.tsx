@@ -13,9 +13,6 @@ export default function NavigationBar({ appState }: { appState: AppState }) {
       alignItems="center"
       position="relative"
     >
-      <Link href="/">
-        <Image width={300} height={100} src="/logo.svg" alt="logo" />
-      </Link>
       {appState.state !== "UNCONNECTED" && (
         <Box position="absolute" right="20px" top="20px">
           <ConnectButton />

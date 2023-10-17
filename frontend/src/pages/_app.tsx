@@ -1,4 +1,5 @@
 import { type AppType } from "next/dist/shared/lib/utils";
+import "../common/styles.css";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return <Component {...pageProps} />;

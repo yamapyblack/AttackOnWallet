@@ -12,14 +12,7 @@ const RootScreen = dynamic(
 const Root: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>Alchemy D-🅰️-🅰️-PP</title>
-        <meta name="description" content="Alchemy D🅰️🅰️pp" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main>
-        <RootScreen />
-      </main>
+      <RootScreen />
     </>
   );
 };

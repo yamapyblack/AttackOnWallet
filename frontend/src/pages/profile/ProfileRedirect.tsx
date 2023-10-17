@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Flex, Spinner } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 
+//TODO: where is this used?
 export default function ProfileRedirect() {
   const router = useRouter();
   const { address, isConnected } = useAccount();
