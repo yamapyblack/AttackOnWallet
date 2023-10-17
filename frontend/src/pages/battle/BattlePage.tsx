@@ -13,17 +13,32 @@ import { optimismGoerli } from "viem/chains";
 import { daappConfigurations } from "../../configs/clientConfigs";
 import { useAppState } from "../../utils/appState";
 import { useNetwork } from "wagmi";
+import { delay } from "~/utils/delay";
+
+enum Skills {
+  Attack = "Attack",
+  Magic = "Magic",
+  Heal = "Heal",
+  Defend = "Defend",
+}
+
+enum battleStatus {
+  playing = "playing",
+  won = "won",
+  lost = "lost",
+}
 
 export function BattlePage() {
   //Battle state
   const [playerHP, setPlayerHP] = useState(100);
   const [enemyHP, setEnemyHP] = useState(100);
-  const [status, setStatus] = useState("playing"); // can be "playing", "won", "lost"
+  const [status, setStatus] = useState(battleStatus.playing);
   const [isEnemyBlinking, setEnemyBlinking] = useState(false);
   const [isWindowWaving, setWindowWaving] = useState(false);
   const [playerImagePosition, setPlayerImagePosition] = useState(0); // Moving only the image
   const [enemyImagePosition, setEnemyImagePosition] = useState(0); // Moving only the image
   const [isMagicSelected, setIsMagicSelected] = useState(false);
+  const [isActionInProgress, setIsActionInProgress] = useState(false);
 
   const { state, eoaAddress, scwAddresses } = useAppState();
   const { chain } = useNetwork();
@@ -32,62 +47,83 @@ export function BattlePage() {
   }
 
   // Function to handle skill selection
-  const handleSkill = (skill: string) => {
-    if (skill === "Attack") {
-      setPlayerImagePosition(10);
+  const enemyAttack = async () => {
+    setEnemyImagePosition(-10);
+    await delay(200);
 
-      setTimeout(() => {
-        setPlayerImagePosition(0); // Reset player's image position
-        setEnemyBlinking(true); // Start blinking
+    setEnemyImagePosition(0);
+    setWindowWaving(true);
+    await delay(1000);
 
-        setTimeout(() => {
-          setEnemyBlinking(false); // Stop blinking
-          setEnemyHP((prevHP) => Math.max(prevHP - 100, 0));
-          if (enemyHP - 100 <= 0) {
-            setStatus("won");
-          }
-          setTimeout(() => {
-            // Delay enemy movement by 1 second
-            setEnemyImagePosition(-10); // Move enemy's image to the left
+    setWindowWaving(false);
+    const newPlayerHP = playerHP - 10;
+    setPlayerHP(newPlayerHP < 0 ? 0 : newPlayerHP);
 
-            setTimeout(() => {
-              setEnemyImagePosition(0);
-              setWindowWaving(true);
-
-              setTimeout(() => {
-                setWindowWaving(false);
-                setPlayerHP((prevHP) => Math.max(prevHP - 10, 0));
-                if (playerHP - 10 <= 0) {
-                  setStatus("lost");
-                }
-              }, 1000);
-            }, 300);
-          }, 1000);
-        }, 1000); // Blinking for 1 seconds
-      }, 200);
-    } else if (skill === "Magic") {
-      setIsMagicSelected(true);
-
-      // You can reset this after the animation duration (1s in our case)
-      setTimeout(() => {
-        setIsMagicSelected(false);
-      }, 1000);
-
-      // ... other logic ...
+    if (newPlayerHP <= 0) {
+      setStatus(battleStatus.lost);
     }
   };
-  if (status === "won") {
-    return <Text>You Win</Text>;
-  }
 
-  if (status === "lost") {
+  const enemyDamaged = async (_damage: number): Promise<boolean> => {
+    //enemy blinking
+    setEnemyBlinking(true);
+    await delay(1000);
+
+    setEnemyBlinking(false);
+    const newEnemyHP = enemyHP - _damage;
+    setEnemyHP(newEnemyHP < 0 ? 0 : newEnemyHP);
+
+    if (newEnemyHP <= 0) {
+      setStatus(battleStatus.won);
+      return true;
+    }
+    return false;
+  };
+
+  const handleSkill = async (skill: Skills) => {
+    setIsActionInProgress(true);
+    if (skill === Skills.Attack) {
+      //Attack effect
+      setPlayerImagePosition(10);
+      await delay(150);
+      setPlayerImagePosition(0);
+
+      if (await enemyDamaged(30)) return;
+
+      await delay(1000);
+      await enemyAttack();
+    } else if (skill === Skills.Magic) {
+      //Magic effect
+      setIsMagicSelected(true);
+      await delay(1000);
+      setIsMagicSelected(false);
+
+      if (await enemyDamaged(60)) return;
+
+      await delay(1000);
+      await enemyAttack();
+    }
+    setIsActionInProgress(false);
+  };
+
+  if (status === battleStatus.lost) {
     return <Text>You Lose</Text>;
   }
 
   return (
     <>
-      {/* Magic Beam Effect */}
-      {isMagicSelected && <div className="green-beam beam-animation"></div>}
+      {status === battleStatus.won && (
+        <Box
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+        >
+          <Text fontSize={120} fontWeight="bold" zIndex={1}>
+            WIN
+          </Text>
+        </Box>
+      )}
       <VStack mt={16} className={isWindowWaving ? "shaking" : ""}>
         <Box w={680}>
           {/* Enemy */}
@@ -108,13 +144,17 @@ export function BattlePage() {
                 </Box>
               </Flex>
             </Box>
-            <Box
+            <VStack
               w={180}
               transform={`translateX(${enemyImagePosition}px)`}
               animation={isEnemyBlinking ? "blinking 0.5s 2" : "none"}
             >
+              {/* Explosion Effect */}
+              {isMagicSelected && (
+                <Box top={10} className="explosion explosion-animation"></Box>
+              )}
               <Image alt="enemy pokemon" w="100%" src="/noun.png" />
-            </Box>
+            </VStack>
           </Flex>
           {/* Player */}
           <Flex alignItems="flex-end" mt={-10}>
@@ -142,16 +182,36 @@ export function BattlePage() {
           <Flex border="1.5px black solid" mt={10} borderRadius={6}>
             <Box border="1px black solid" borderRadius={4} w={200}>
               <Box p={6}>
-                <Text onClick={() => handleSkill("Attack")} p={1}>
+                <Text
+                  onClick={() =>
+                    !isActionInProgress && handleSkill(Skills.Attack)
+                  }
+                  p={1}
+                >
                   Attack
                 </Text>
-                <Text onClick={() => handleSkill("Magic")} p={1}>
+                <Text
+                  onClick={() =>
+                    !isActionInProgress && handleSkill(Skills.Magic)
+                  }
+                  p={1}
+                >
                   Magic
                 </Text>
-                <Text onClick={() => handleSkill("Heal")} p={1}>
+                <Text
+                  onClick={() =>
+                    !isActionInProgress && handleSkill(Skills.Heal)
+                  }
+                  p={1}
+                >
                   Heal
                 </Text>
-                <Text onClick={() => handleSkill("Defend")} p={1}>
+                <Text
+                  onClick={() =>
+                    !isActionInProgress && handleSkill(Skills.Defend)
+                  }
+                  p={1}
+                >
                   Defend
                 </Text>
               </Box>

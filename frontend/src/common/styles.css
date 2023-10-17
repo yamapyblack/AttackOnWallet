@@ -16,31 +16,32 @@
   animation: shaking 1s ease-in-out;
 }
 
-.green-beam {
-  width: 60px;
-  height: calc(50% - 90px);  /* Assuming the two images are spaced equally in a container and the beam starts from the center of one image and ends at the center of the other */
-  background: radial-gradient(circle at center, #90EE90, #006400); /* Pale green in the center and dark green at the edges */
-  opacity: 0;
+.explosion {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
   position: absolute;
-  left: 50%; 
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%); 
-  z-index: 1; 
-  border-left: 2px solid #004d00; 
-  border-right: 2px solid #004d00; 
+  transform: scale(0);
+  background: radial-gradient(circle, #FFD700, #FF4500); /* yellow to red */
+  opacity: 0;
+  z-index: 10; /* make sure the explosion appears on top */
 }
 
-@keyframes beamEffect {
+@keyframes explosionAnimation {
   0% {
-    opacity: 0;
-    transform: translateX(-50%) translateY(50%);
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
   }
   100% {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-50%);
+    transform: scale(2.5);
+    opacity: 0;
   }
 }
 
-.beam-animation {
-  animation: beamEffect 1s forwards;
+.explosion-animation {
+  animation: explosionAnimation 1s forwards;
 }
