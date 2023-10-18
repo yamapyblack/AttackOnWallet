@@ -14,6 +14,11 @@ import { daappConfigurations } from "../../configs/clientConfigs";
 import { useAppState } from "../../utils/appState";
 import { useNetwork } from "wagmi";
 import { delay } from "~/utils/delay";
+import { useContractEvent } from "wagmi";
+import { AoWBattleABI } from "../../common/aowBattleAbi";
+import { getAddresses } from "~/common/getAddresses";
+import { useContractRead } from "wagmi";
+import { Log } from "viem";
 
 enum Skills {
   Attack = "Attack",
@@ -28,7 +33,32 @@ enum battleStatus {
   lost = "lost",
 }
 
+type Joined = Log[] & [{ args: { _battleId: number } }];
+
 export function BattlePage() {
+  const { chain } = useNetwork();
+  const addresses = getAddresses(chain?.id!)!;
+  useContractEvent({
+    address: addresses.AoWBattle,
+    abi: AoWBattleABI.abi,
+    eventName: "Joined",
+    listener(logs) {
+      console.log("Joined", logs);
+
+      console.log("Joined data", logs[0]?.data);
+
+      const _battleId = (logs as Joined)[0]?.args?._battleId;
+      console.log("_battleId:", _battleId);
+    },
+  });
+
+  const { data } = useContractRead({
+    address: addresses.AoWBattle,
+    abi: AoWBattleABI.abi,
+    functionName: "battleId",
+  });
+  console.log("read battleId", data?.toString());
+
   //Battle state
   const [playerHP, setPlayerHP] = useState(100);
   const [enemyHP, setEnemyHP] = useState(100);
@@ -41,7 +71,6 @@ export function BattlePage() {
   const [isActionInProgress, setIsActionInProgress] = useState(false);
 
   const { state, eoaAddress, scwAddresses } = useAppState();
-  const { chain } = useNetwork();
   if (state !== "HAS_SCW") {
     return null;
   }
@@ -78,6 +107,12 @@ export function BattlePage() {
       return true;
     }
     return false;
+  };
+
+  const handleSkillWrapper = (skill: Skills) => {
+    handleSkill(skill).catch((error: Error) => {
+      console.error("Error handling skill:", error);
+    });
   };
 
   const handleSkill = async (skill: Skills) => {
@@ -183,33 +218,41 @@ export function BattlePage() {
             <Box border="1px black solid" borderRadius={4} w={200}>
               <Box p={6}>
                 <Text
-                  onClick={() =>
-                    !isActionInProgress && handleSkill(Skills.Attack)
-                  }
+                  onClick={() => {
+                    handleSkill(Skills.Attack).catch((error: Error) => {
+                      console.error("Error handling skill:", error);
+                    });
+                  }}
                   p={1}
                 >
                   Attack
                 </Text>
                 <Text
-                  onClick={() =>
-                    !isActionInProgress && handleSkill(Skills.Magic)
-                  }
+                  onClick={() => {
+                    handleSkill(Skills.Magic).catch((error: Error) => {
+                      console.error("Error handling skill:", error);
+                    });
+                  }}
                   p={1}
                 >
                   Magic
                 </Text>
                 <Text
-                  onClick={() =>
-                    !isActionInProgress && handleSkill(Skills.Heal)
-                  }
+                  onClick={() => {
+                    handleSkill(Skills.Heal).catch((error: Error) => {
+                      console.error("Error handling skill:", error);
+                    });
+                  }}
                   p={1}
                 >
                   Heal
                 </Text>
                 <Text
-                  onClick={() =>
-                    !isActionInProgress && handleSkill(Skills.Defend)
-                  }
+                  onClick={() => {
+                    handleSkill(Skills.Defend).catch((error: Error) => {
+                      console.error("Error handling skill:", error);
+                    });
+                  }}
                   p={1}
                 >
                   Defend

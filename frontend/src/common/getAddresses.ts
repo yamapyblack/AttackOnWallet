@@ -11,6 +11,7 @@ export const getAddresses = (_chainId: number) => {
         "0xc9966401164FEd576Bb9f56E67E87d98663FD5a2" as `0x${string}`,
       SessionKeyAddress:
         "0xC275b7e36faF2eBdaBf2B256443e88d911fd822e" as `0x${string}`,
+      AoWBattle: "0xBa3F74522BF9A4d82a6CA3c1dE052724862A093b" as `0x${string}`,
     };
   }
 };
