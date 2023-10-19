@@ -59,25 +59,36 @@ export function BattlePage() {
   };
 
   const attack = async (skill: Skills) => {
+    const skillId = skill === Skills.Attack ? BigInt(1) : BigInt(2);
+
     //1. Send tx
     const { request } = await prepareWriteContract({
       address: addresses.AoWBattle,
       abi: AoWBattleABI.abi,
       functionName: "attack",
-      //TODO skill
-      args: [battleId, BigInt(1)],
+      args: [battleId, skillId],
     });
     const { hash } = await writeContract(request);
     console.log("hash", hash);
 
     //2. Occur effect
-    setPlayerImagePosition(10);
-    await delay(150);
-    setPlayerImagePosition(0);
-    await delay(200);
-    setEnemyBlinking(true);
-    await delay(1000);
-    setEnemyBlinking(false);
+    if (skill === Skills.Attack) {
+      setPlayerImagePosition(15);
+      await delay(300);
+      setPlayerImagePosition(0);
+      await delay(400);
+      setEnemyBlinking(true);
+      await delay(2000);
+      setEnemyBlinking(false);
+    } else if (skill === Skills.Magic) {
+      setIsMagicSelected(true);
+      await delay(1000);
+      setIsMagicSelected(false);
+      await delay(400);
+      setEnemyBlinking(true);
+      await delay(2000);
+      setEnemyBlinking(false);
+    }
 
     //3. Set endPlayerAttack
     setEndPlayerAttack(true);
@@ -86,30 +97,18 @@ export function BattlePage() {
   // // Function to handle skill selection
   const enemyAttack = async () => {
     //1. Occur effect
+    await delay(1000);
     setEnemyImagePosition(-10);
     await delay(200);
 
     setEnemyImagePosition(0);
     setWindowWaving(true);
+    await delay(1000);
+    setWindowWaving(false);
+
     //2. Set endEnemyAttack
     setEndEnemyAttack(true);
   };
-
-  // const enemyDamaged = async (_damage: number): Promise<boolean> => {
-  //   //enemy blinking
-  //   setEnemyBlinking(true);
-  //   await delay(1000);
-
-  //   setEnemyBlinking(false);
-  //   const newEnemyHP = enemyHP - _damage;
-  //   setEnemyHP(newEnemyHP < 0 ? 0 : newEnemyHP);
-
-  //   if (newEnemyHP <= 0) {
-  //     setStatus(BattleStatus.won);
-  //     return true;
-  //   }
-  //   return false;
-  // };
 
   // const handleSkill = async (skill: Skills) => {
   //   setIsActionInProgress(true);
@@ -152,6 +151,7 @@ export function BattlePage() {
   const [playerImagePosition, setPlayerImagePosition] = useState(0); // Moving only the image
   const [enemyImagePosition, setEnemyImagePosition] = useState(0); // Moving only the image
   const [isMagicSelected, setIsMagicSelected] = useState(false);
+  const [damagedLogs, setDamagedLogs] = useState<Log[]>();
 
   const chainId = useChainId();
   const addresses = getAddresses(chainId)!;
@@ -191,7 +191,7 @@ export function BattlePage() {
       setEnemyHP(tmpEnemyHp);
 
       //Judge win or lose
-      if (playerHP <= 0 || enemyHP <= 0) {
+      if (playerHP <= 0 || tmpEnemyHp <= 0) {
         return;
       }
       //Next
@@ -213,6 +213,26 @@ export function BattlePage() {
     }
   }, [endEnemyAttack, endEnemyAttackEvent]);
 
+  //Manage damaged event
+  useEffect(() => {
+    if (damagedLogs === undefined || battleId === BigInt(0)) return;
+    damagedLogs.map((l) => {
+      const arg = (l as Damaged).args;
+      console.log("Damaged arg", arg, battleId);
+      if (arg._battleId === battleId) {
+        if (!arg.isPlayer && !endPlayerAttackEvent) {
+          console.log("set setEndPlayerAttackEvent");
+          setEndPlayerAttackEvent(true);
+          setTmpEnemyHp(enemyHP - Number(arg.damage));
+        } else if (arg.isPlayer && !endEnemyAttackEvent) {
+          console.log("set setEndEnemyAttackEvent");
+          setEndEnemyAttackEvent(true);
+          setTmpPlayerHp(playerHP - Number(arg.damage));
+        }
+      }
+    });
+  }, [damagedLogs, battleId]);
+
   //---------------------- Events ----------------------
   useContractEvent({
     address: addresses.AoWBattle,
@@ -220,21 +240,7 @@ export function BattlePage() {
     eventName: "Damaged",
     listener(logs) {
       console.log("Damaged", logs);
-      logs.map((l) => {
-        const arg = (l as Damaged).args;
-        console.log("Damaged arg", arg, battleId);
-        if (arg._battleId === battleId) {
-          if (!arg.isPlayer && !endPlayerAttackEvent) {
-            console.log("set setEndPlayerAttackEvent");
-            setEndPlayerAttackEvent(true);
-            setTmpEnemyHp(enemyHP - Number(arg.damage));
-          } else if (arg.isPlayer && !endEnemyAttackEvent) {
-            console.log("set setEndEnemyAttackEvent");
-            setEndEnemyAttackEvent(true);
-            setTmpPlayerHp(playerHP - Number(arg.damage));
-          }
-        }
-      });
+      setDamagedLogs(logs);
     },
   });
 
