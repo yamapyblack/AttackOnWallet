@@ -12,14 +12,13 @@ import { useAppState } from "../../utils/appState";
 import { delay } from "~/utils/delay";
 import { AoWBattleABI } from "../../common/aowBattleAbi";
 import { getAddresses } from "~/common/getAddresses";
-import { Log } from "viem";
+import type { Log } from "viem";
 
 import { useContractEvent, useContractRead, useChainId } from "wagmi";
 import {
   prepareWriteContract,
   writeContract,
   waitForTransaction,
-  watchContractEvent,
 } from "@wagmi/core";
 
 enum Skills {
@@ -255,7 +254,7 @@ export function BattlePage() {
           {/* Enemy */}
           <Flex justifyContent="end">
             <Box mr={10}>
-              <Text>yamapy</Text>
+              <Text>You</Text>
               <Flex justifyContent="between">
                 <Box w={10}>
                   <Text>HP</Text>
@@ -288,7 +287,7 @@ export function BattlePage() {
               <Image alt="player pokemon" w="100%" src="/noun.png" />
             </Box>
             <Box ml={10}>
-              <Text>yamapy</Text>
+              <Text>Rival</Text>
               <Flex justifyContent="between">
                 <Box w={10}>
                   <Text>HP</Text>
