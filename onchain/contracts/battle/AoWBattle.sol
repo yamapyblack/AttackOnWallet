@@ -12,8 +12,9 @@ contract AoWBattle {
     }
 
     // Define events
-    event Joined(uint256 _battleId);
+    event Joined(uint256 indexed _battleId);
     event Battles(uint256 indexed battleId, Battle battle);
+    event Damaged(uint256 indexed _battleId, bool isPlayer, uint256 damage);
 
     // Constants
     uint256 constant MAX_HP = 100;
@@ -23,7 +24,8 @@ contract AoWBattle {
     mapping(uint256 => Battle) public battles;
 
     function join(uint256 tokenId) external returns (uint256 battleId_) {
-        battleId_ = battleId++;
+        battleId++;
+        battleId_ = battleId;
         Battle storage _battle = battles[battleId_];
         require(!_battle.battleInProgress, "Battle already in progress");
 
@@ -52,6 +54,7 @@ contract AoWBattle {
         // caluculate damage with condition that  HP is not 0
         _damage = (_battle.enemyHP > _damage) ? _damage : _battle.enemyHP;
         _battle.enemyHP -= _damage;
+        emit Damaged(_battleId, false, _damage);
 
         if (_battle.enemyHP == 0) {
             _battle.winner = true;
@@ -63,6 +66,7 @@ contract AoWBattle {
         uint256 _damage2 = 10; // For example, enemy deals 10 damage
         _damage2 = (_battle.playerHP > _damage2) ? _damage2 : _battle.playerHP;
         _battle.playerHP -= _damage2;
+        emit Damaged(_battleId, true, _damage2);
 
         if (_battle.playerHP == 0) {
             _battle.winner = false;

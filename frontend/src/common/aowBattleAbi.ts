@@ -55,7 +55,32 @@ export const AoWBattleABI = {
       anonymous: false,
       inputs: [
         {
+          indexed: true,
+          internalType: "uint256",
+          name: "_battleId",
+          type: "uint256",
+        },
+        {
           indexed: false,
+          internalType: "bool",
+          name: "isPlayer",
+          type: "bool",
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "damage",
+          type: "uint256",
+        },
+      ],
+      name: "Damaged",
+      type: "event",
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
           internalType: "uint256",
           name: "_battleId",
           type: "uint256",
