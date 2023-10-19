@@ -29,14 +29,13 @@ enum Skills {
   Defend = "Defend",
 }
 
-type Battles = {
-  playerHP: bigint;
-  enemyHP: bigint;
-};
-
-type Joined = Log[] & [{ args: { _battleId: bigint } }];
-type Damaged = Log & {
-  args: { _battleId: bigint; isPlayer: boolean; damage: bigint };
+type Attacked = Log & {
+  args: {
+    _battleId: bigint;
+    _isPlayer: boolean;
+    _playerHP: bigint;
+    _enemyHP: bigint;
+  };
 };
 
 const INITIAL_HP = 100;
@@ -81,9 +80,9 @@ export function BattlePage() {
       await delay(2000);
       setEnemyBlinking(false);
     } else if (skill === Skills.Magic) {
-      setIsMagicSelected(true);
+      setIsMagicEffect(true);
       await delay(1000);
-      setIsMagicSelected(false);
+      setIsMagicEffect(false);
       await delay(400);
       setEnemyBlinking(true);
       await delay(2000);
@@ -110,48 +109,22 @@ export function BattlePage() {
     setEndEnemyAttack(true);
   };
 
-  // const handleSkill = async (skill: Skills) => {
-  //   setIsActionInProgress(true);
-  //   if (skill === Skills.Attack) {
-  //     //Attack effect
-  //     setPlayerImagePosition(10);
-  //     await delay(150);
-  //     setPlayerImagePosition(0);
-
-  //     if (await enemyDamaged(30)) return;
-
-  //     await delay(1000);
-  //     await enemyAttack();
-  //   } else if (skill === Skills.Magic) {
-  //     //Magic effect
-  //     setIsMagicSelected(true);
-  //     await delay(1000);
-  //     setIsMagicSelected(false);
-
-  //     if (await enemyDamaged(60)) return;
-
-  //     await delay(1000);
-  //     await enemyAttack();
-  //   }
-  //   setIsActionInProgress(false);
-  // };
-
   //---------------------- States ----------------------
   const [battleId, setBattleId] = useState(BigInt(0));
   const [playerHP, setPlayerHP] = useState(INITIAL_HP);
-  const [tmpPlayerHp, setTmpPlayerHp] = useState(playerHP);
   const [enemyHP, setEnemyHP] = useState(INITIAL_HP);
-  const [tmpEnemyHp, setTmpEnemyHp] = useState(enemyHP);
-  const [endPlayerAttackEvent, setEndPlayerAttackEvent] = useState(false);
-  const [endEnemyAttackEvent, setEndEnemyAttackEvent] = useState(false);
+  const [tmpPlayerHP, setTmpPlayerHP] = useState(INITIAL_HP);
+  const [tmpEnemyHP, setTmpEnemyHP] = useState(INITIAL_HP);
   const [endPlayerAttack, setEndPlayerAttack] = useState(false);
   const [endEnemyAttack, setEndEnemyAttack] = useState(false);
+  const [endPlayerAttackEvent, setEndPlayerAttackEvent] = useState(false);
+  const [endEnemyAttackEvent, setEndEnemyAttackEvent] = useState(false);
   const [isEnemyBlinking, setEnemyBlinking] = useState(false);
   const [isWindowWaving, setWindowWaving] = useState(false);
-  const [playerImagePosition, setPlayerImagePosition] = useState(0); // Moving only the image
-  const [enemyImagePosition, setEnemyImagePosition] = useState(0); // Moving only the image
-  const [isMagicSelected, setIsMagicSelected] = useState(false);
-  const [damagedLogs, setDamagedLogs] = useState<Log[]>();
+  const [playerImagePosition, setPlayerImagePosition] = useState(0);
+  const [enemyImagePosition, setEnemyImagePosition] = useState(0);
+  const [isMagicEffect, setIsMagicEffect] = useState(false);
+  const [attackedLogs, setAttackedLogs] = useState<Log[]>();
 
   const chainId = useChainId();
   const addresses = getAddresses(chainId)!;
@@ -187,11 +160,11 @@ export function BattlePage() {
       setEndPlayerAttack(false);
       setEndPlayerAttackEvent(false);
 
-      console.log("tmpEnemyHp", tmpEnemyHp);
-      setEnemyHP(tmpEnemyHp);
+      console.log("tmpEnemyHp", tmpEnemyHP);
+      setEnemyHP(tmpEnemyHP);
 
       //Judge win or lose
-      if (playerHP <= 0 || tmpEnemyHp <= 0) {
+      if (playerHP <= 0 || tmpEnemyHP <= 0) {
         return;
       }
       //Next
@@ -208,39 +181,39 @@ export function BattlePage() {
       setEndEnemyAttackEvent(false);
       setEndEnemyAttack(false);
 
-      console.log("tmpPlayerHp", tmpPlayerHp);
-      setPlayerHP(tmpPlayerHp);
+      console.log("tmpPlayerHp", tmpPlayerHP);
+      setPlayerHP(tmpPlayerHP);
     }
   }, [endEnemyAttack, endEnemyAttackEvent]);
 
-  //Manage damaged event
+  //Manage Attacked event
   useEffect(() => {
-    if (damagedLogs === undefined || battleId === BigInt(0)) return;
-    damagedLogs.map((l) => {
-      const arg = (l as Damaged).args;
-      console.log("Damaged arg", arg, battleId);
+    if (attackedLogs === undefined || battleId === BigInt(0)) return;
+    attackedLogs.map((l) => {
+      const arg = (l as Attacked).args;
+      console.log("Attacked arg", arg, battleId);
       if (arg._battleId === battleId) {
-        if (!arg.isPlayer && !endPlayerAttackEvent) {
+        if (arg._isPlayer) {
           console.log("set setEndPlayerAttackEvent");
           setEndPlayerAttackEvent(true);
-          setTmpEnemyHp(enemyHP - Number(arg.damage));
-        } else if (arg.isPlayer && !endEnemyAttackEvent) {
+          setTmpEnemyHP(Number(arg._enemyHP));
+        } else {
           console.log("set setEndEnemyAttackEvent");
           setEndEnemyAttackEvent(true);
-          setTmpPlayerHp(playerHP - Number(arg.damage));
+          setTmpPlayerHP(Number(arg._playerHP));
         }
       }
     });
-  }, [damagedLogs, battleId]);
+  }, [attackedLogs, battleId]);
 
   //---------------------- Events ----------------------
   useContractEvent({
     address: addresses.AoWBattle,
     abi: AoWBattleABI.abi,
-    eventName: "Damaged",
+    eventName: "Attacked",
     listener(logs) {
-      console.log("Damaged", logs);
-      setDamagedLogs(logs);
+      console.log("Attacked", logs);
+      setAttackedLogs(logs);
     },
   });
 
@@ -303,7 +276,7 @@ export function BattlePage() {
               animation={isEnemyBlinking ? "blinking 0.5s 2" : "none"}
             >
               {/* Explosion Effect */}
-              {isMagicSelected && (
+              {isMagicEffect && (
                 <Box top={10} className="explosion explosion-animation"></Box>
               )}
               <Image alt="enemy pokemon" w="100%" src="/noun.png" />

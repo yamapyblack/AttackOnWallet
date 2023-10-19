@@ -13,8 +13,12 @@ contract AoWBattle {
 
     // Define events
     event Joined(uint256 indexed _battleId);
-    event Battles(uint256 indexed battleId, Battle battle);
-    event Damaged(uint256 indexed _battleId, bool isPlayer, uint256 damage);
+    event Attacked(
+        uint256 indexed _battleId,
+        bool _isPlayer,
+        uint256 _playerHP,
+        uint256 _enemyHP
+    );
 
     // Constants
     uint256 constant MAX_HP = 100;
@@ -51,26 +55,26 @@ contract AoWBattle {
         } else if (skill == 2) {
             _damage = 60;
         }
-        // caluculate damage with condition that  HP is not 0
-        _damage = (_battle.enemyHP > _damage) ? _damage : _battle.enemyHP;
-        _battle.enemyHP -= _damage;
-        emit Damaged(_battleId, false, _damage);
+
+        _battle.enemyHP = (_battle.enemyHP > _damage)
+            ? _battle.enemyHP - _damage
+            : 0;
+        emit Attacked(_battleId, true, _battle.playerHP, _battle.enemyHP);
 
         if (_battle.enemyHP == 0) {
             _battle.winner = true;
+            return;
         }
-        emit Battles(_battleId, _battle);
-        if (_battle.enemyHP == 0) return;
 
         // Enemy attacks
         uint256 _damage2 = 10; // For example, enemy deals 10 damage
-        _damage2 = (_battle.playerHP > _damage2) ? _damage2 : _battle.playerHP;
-        _battle.playerHP -= _damage2;
-        emit Damaged(_battleId, true, _damage2);
+        _battle.playerHP = (_battle.playerHP > _damage2)
+            ? _battle.playerHP - _damage2
+            : 0;
+        emit Attacked(_battleId, false, _battle.playerHP, _battle.enemyHP);
 
         if (_battle.playerHP == 0) {
             _battle.winner = false;
         }
-        emit Battles(_battleId, _battle);
     }
 }

@@ -17,7 +17,7 @@ export const getAddresses = () => {
         SessionKeyAccount1: "0xc1777F38F660C5b381fb69904058636962C1fc8B",
         AoWNFT: "0x864C3639f48b52DE7EC7E4f2dB6435dcb8956606",
         AoWAccountFactory: "0xc9966401164FEd576Bb9f56E67E87d98663FD5a2",
-        AoWBattle: "0x4608F33E8905D60f9d564B7f4cB110dA15F21C20",
+        AoWBattle: "0x28b175977E820668Bb26442ea5F7Ed0EE8E524E8",
       };
   }
 };

@@ -63,17 +63,23 @@ export const AoWBattleABI = {
         {
           indexed: false,
           internalType: "bool",
-          name: "isPlayer",
+          name: "_isPlayer",
           type: "bool",
         },
         {
           indexed: false,
           internalType: "uint256",
-          name: "damage",
+          name: "_playerHP",
+          type: "uint256",
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "_enemyHP",
           type: "uint256",
         },
       ],
-      name: "Damaged",
+      name: "Attacked",
       type: "event",
     },
     {
