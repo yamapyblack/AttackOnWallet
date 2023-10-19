@@ -13,16 +13,15 @@ import { useAppState } from "../../utils/appState";
 import { delay } from "~/utils/delay";
 import { AoWBattleABI } from "../../common/aowBattleAbi";
 import { getAddresses } from "~/common/getAddresses";
-import type { Log } from "viem";
+import { type Log, encodeFunctionData } from "viem";
 import { BattleStart } from "./BattleStart";
-import { optimismGoerli } from "viem/chains";
 import { daappConfigurations } from "../../configs/clientConfigs";
-import { encodeFunctionData, type Hash } from "viem";
+import { sessionKeyStore } from "~/utils/localStorage";
 
 import {
   useContractEvent,
   useContractRead,
-  useChainId,
+  useNetwork,
   type Chain,
 } from "wagmi";
 import {
@@ -39,7 +38,6 @@ import {
   getUserOperationHash,
   type UserOperationRequest,
 } from "@alchemy/aa-core";
-import { sessionKeyStore } from "~/utils/localStorage";
 
 enum Skills {
   Attack = "Attack",
@@ -59,66 +57,21 @@ type Attacked = Log & {
 
 const INITIAL_HP = 100;
 
-const attackBySessionkey = async (
-  owner: SmartAccountSigner,
-  battleId: bigint,
-  skillId: bigint
-) => {
-  const chain: Chain = optimismGoerli;
-  const addresses = getAddresses(chain?.id!)!;
-  const RpcUrl = daappConfigurations[optimismGoerli.id]!.rpcUrl;
-
-  // 2. initialize the provider and connect it to the account
-  const provider = new SmartAccountProvider(
-    RpcUrl,
-    addresses.EntryPointAddress,
-    optimismGoerli // chain
-  ).connect(
-    (rpcClient) =>
-      new SimpleSmartContractAccount({
-        entryPointAddress: addresses.EntryPointAddress,
-        chain: chain,
-        factoryAddress: addresses.AccountFactoryAddress,
-        rpcClient,
-        owner,
-        index: BigInt(8), //salt
-      })
+function HpComponent({ name, hp }: { name: string; hp: number }) {
+  return (
+    <>
+      <Text>{name}</Text>
+      <Flex justifyContent="between">
+        <Box w={10}>
+          <Text>HP</Text>
+        </Box>
+        <Box pt={2} w={260}>
+          <Progress size="sm" value={hp} isAnimated={true} hasStripe={true} />
+        </Box>
+      </Flex>
+    </>
   );
-
-  const smartAccountAddress = await provider.getAddress();
-  console.log("smartAccountAddress: ", smartAccountAddress);
-
-  const privateSessionKey =
-    sessionKeyStore.getPrivateSessionKey() as `0x${string}`;
-  const sessionKey =
-    LocalAccountSigner.privateKeyToAccountSigner(privateSessionKey);
-  console.log("privateSessionKey: ", privateSessionKey);
-  console.log("sessionKey: ", sessionKey);
-
-  const uoStruct = await provider.buildUserOperation({
-    target: addresses.AoWBattle,
-    data: encodeFunctionData({
-      abi: AoWBattleABI.abi,
-      functionName: "attack",
-      args: [battleId, skillId],
-    }),
-  });
-  const request: UserOperationRequest = deepHexlify(
-    uoStruct
-  ) as UserOperationRequest;
-
-  request.signature = await sessionKey.signMessage(
-    getUserOperationHash(request, addresses.EntryPointAddress, BigInt(chain.id))
-  );
-
-  const hash = await provider.rpcClient.sendUserOperation(
-    request,
-    addresses.EntryPointAddress
-  );
-  console.log("attackBySessionkey hash: ", hash);
-  // const waitHash = await provider.waitForUserOperationTransaction(hash);
-  // console.log("waitHash: ", waitHash);
-};
+}
 
 export function BattlePage() {
   //---------------------- Actions ----------------------
@@ -137,12 +90,80 @@ export function BattlePage() {
     });
   };
 
-  const attack = async (owner: SmartAccountSigner, skill: Skills) => {
+  const attackBySessionkey = async (
+    owner: SmartAccountSigner,
+    battleId: bigint,
+    skillId: bigint,
+    chain: Chain
+  ) => {
+    const addresses = getAddresses(chain?.id!)!;
+    const rpcUrl = daappConfigurations[chain?.id]!.rpcUrl;
+
+    // 2. initialize the provider and connect it to the account
+    const provider = new SmartAccountProvider(
+      rpcUrl,
+      addresses.EntryPointAddress,
+      chain
+    ).connect(
+      (rpcClient) =>
+        new SimpleSmartContractAccount({
+          entryPointAddress: addresses.EntryPointAddress,
+          chain: chain,
+          factoryAddress: addresses.AccountFactoryAddress,
+          rpcClient,
+          owner,
+          index: BigInt(8), //salt
+        })
+    );
+
+    const smartAccountAddress = await provider.getAddress();
+    console.log("smartAccountAddress: ", smartAccountAddress);
+
+    const privateSessionKey =
+      sessionKeyStore.getPrivateSessionKey() as `0x${string}`;
+    const sessionKey =
+      LocalAccountSigner.privateKeyToAccountSigner(privateSessionKey);
+    console.log("privateSessionKey: ", privateSessionKey);
+    console.log("sessionKey: ", sessionKey);
+
+    const uoStruct = await provider.buildUserOperation({
+      target: addresses.AoWBattle,
+      data: encodeFunctionData({
+        abi: AoWBattleABI.abi,
+        functionName: "attack",
+        args: [battleId, skillId],
+      }),
+    });
+    const request: UserOperationRequest = deepHexlify(
+      uoStruct
+    ) as UserOperationRequest;
+
+    request.signature = await sessionKey.signMessage(
+      getUserOperationHash(
+        request,
+        addresses.EntryPointAddress,
+        BigInt(chain.id)
+      )
+    );
+
+    const hash = await provider.rpcClient.sendUserOperation(
+      request,
+      addresses.EntryPointAddress
+    );
+    console.log("attackBySessionkey hash: ", hash);
+    // const waitHash = await provider.waitForUserOperationTransaction(hash);
+    // console.log("waitHash: ", waitHash);
+  };
+
+  const attack = async (
+    owner: SmartAccountSigner,
+    skill: Skills,
+    chain: Chain
+  ) => {
     const skillId = skill === Skills.Attack ? BigInt(1) : BigInt(2);
 
     //1. Send tx
-
-    await attackBySessionkey(owner, battleId, skillId);
+    await attackBySessionkey(owner, battleId, skillId, chain);
     // const { request } = await prepareWriteContract({
     //   address: addresses.AoWBattle,
     //   abi: AoWBattleABI.abi,
@@ -208,10 +229,10 @@ export function BattlePage() {
   const [isMagicEffect, setIsMagicEffect] = useState(false);
   const [attackedLogs, setAttackedLogs] = useState<Log[]>();
 
-  const chainId = useChainId();
-  const addresses = getAddresses(chainId)!;
-
   //---------------------- Set initial state ----------------------
+  const { chain } = useNetwork();
+  const addresses = getAddresses(chain?.id!)!;
+
   useContractRead({
     address: addresses.AoWBattle,
     abi: AoWBattleABI.abi,
@@ -300,7 +321,7 @@ export function BattlePage() {
   });
 
   const ownerResult = useSimpleAccountSigner();
-  const { state, eoaAddress, scwAddresses } = useAppState();
+  const { state } = useAppState();
   if (state !== "HAS_SCW") {
     return null;
   }
@@ -338,20 +359,7 @@ export function BattlePage() {
           {/* Enemy */}
           <Flex justifyContent="end">
             <Box mr={10}>
-              <Text>Rival</Text>
-              <Flex justifyContent="between">
-                <Box w={10}>
-                  <Text>HP</Text>
-                </Box>
-                <Box pt={2} w={260}>
-                  <Progress
-                    size="sm"
-                    value={enemyHP}
-                    isAnimated={true}
-                    hasStripe={true}
-                  />
-                </Box>
-              </Flex>
+              <HpComponent name="Rival" hp={enemyHP} />
             </Box>
             <VStack
               w={180}
@@ -371,20 +379,7 @@ export function BattlePage() {
               <Image alt="player pokemon" w="100%" src="/noun.png" />
             </Box>
             <Box ml={10}>
-              <Text>You</Text>
-              <Flex justifyContent="between">
-                <Box w={10}>
-                  <Text>HP</Text>
-                </Box>
-                <Box pt={2} w={260}>
-                  <Progress
-                    size="sm"
-                    value={playerHP}
-                    isAnimated={true}
-                    hasStripe={true}
-                  />
-                </Box>
-              </Flex>
+              <HpComponent name="You" hp={playerHP} />
             </Box>
           </Flex>
           {/* Command window */}
@@ -397,7 +392,7 @@ export function BattlePage() {
                     p={1}
                     key={skill}
                     onClick={() => {
-                      attack(ownerResult?.owner, skill).catch(
+                      attack(ownerResult?.owner, skill, chain).catch(
                         (error: Error) => {
                           console.error(
                             `Error handling ${skill} skill:`,
