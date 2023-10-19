@@ -12,6 +12,11 @@ export const AoWAccountFactoryABI = {
           name: "_nft",
           type: "address",
         },
+        {
+          internalType: "address",
+          name: "_battle",
+          type: "address",
+        },
       ],
       stateMutability: "nonpayable",
       type: "constructor",
@@ -22,6 +27,19 @@ export const AoWAccountFactoryABI = {
       outputs: [
         {
           internalType: "contract SessionKeyAccount",
+          name: "",
+          type: "address",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "battle",
+      outputs: [
+        {
+          internalType: "address",
           name: "",
           type: "address",
         },

@@ -6,14 +6,21 @@ interface Mintable {
     function mint(address to) external;
 }
 
+interface Joinable {
+    function join(uint256 tokenId) external returns (uint256 battleId_);
+}
+
 contract AoWAccountFactory is SessionKeyAccountFactory {
     address public immutable nft;
+    address public immutable battle;
 
     constructor(
         IEntryPoint _entryPoint,
-        address _nft
+        address _nft,
+        address _battle
     ) SessionKeyAccountFactory(_entryPoint) {
         nft = _nft;
+        battle = _battle;
     }
 
     function createAccount(
@@ -29,5 +36,6 @@ contract AoWAccountFactory is SessionKeyAccountFactory {
 
         //mint nft
         Mintable(nft).mint(address(ret));
+        Joinable(battle).join(1);
     }
 }

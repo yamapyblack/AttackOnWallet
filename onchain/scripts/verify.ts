@@ -5,8 +5,8 @@ async function main() {
   const a = getAddresses()!;
 
   await env.run("verify:verify", {
-    address: a.AoWBattle,
-    constructorArguments: [],
+    address: a.AoWAccountFactory,
+    constructorArguments: [a.EntryPoint, a.AoWNFT, a.AoWBattle],
   });
 }
 

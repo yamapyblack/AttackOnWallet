@@ -37,22 +37,22 @@ export const localSmartContractStore = {
   removeSmartContractAccount,
 };
 
-const SESSION_KEY = "smartContractSessionKey";
+const PRIVATE_SESSION_KEY = "privateSessionKey";
 
-const getSessionKey = () => {
-  return sessionStorage.getItem(SESSION_KEY);
+const getPrivateSessionKey = () => {
+  return sessionStorage.getItem(PRIVATE_SESSION_KEY);
 };
 
-const setSessionKey = (session: string) => {
-  sessionStorage.setItem(SESSION_KEY, session);
+const setPrivateSessionKey = (privateSessionKey: string) => {
+  sessionStorage.setItem(PRIVATE_SESSION_KEY, privateSessionKey);
 };
 
-const removeSessionKey = () => {
-  sessionStorage.removeItem(SESSION_KEY);
+const removePrivateSessionKey = () => {
+  sessionStorage.removeItem(PRIVATE_SESSION_KEY);
 };
 
 export const sessionKeyStore = {
-  getSessionKey,
-  setSessionKey,
-  removeSessionKey,
+  getPrivateSessionKey,
+  setPrivateSessionKey,
+  removePrivateSessionKey,
 };

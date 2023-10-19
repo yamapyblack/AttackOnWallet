@@ -10,6 +10,7 @@ import { parseEther } from "viem";
 import { localSmartContractStore } from "~/utils/localStorage";
 import { useRouter } from "next/router";
 import { getAddresses } from "../../common/getAddresses";
+import { AoWAccountFactoryABI } from "../../common/aowAccountFactoryAbi";
 
 export function CreateAccount() {
   const router = useRouter();
@@ -24,34 +25,10 @@ export function CreateAccount() {
     data: prepareData,
   } = usePrepareContractWrite({
     address: addresses.AccountFactoryAddress,
-    abi: [
-      {
-        inputs: [
-          {
-            internalType: "address",
-            name: "owner",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "salt",
-            type: "uint256",
-          },
-        ],
-        name: "createAccount",
-        outputs: [
-          {
-            internalType: "contract SessionKeyAccount",
-            name: "ret",
-            type: "address",
-          },
-        ],
-        stateMutability: "payable",
-        type: "function",
-      },
-    ],
+    abi: AoWAccountFactoryABI.abi,
     functionName: "createAccount",
-    args: [owner, BigInt(7)],
+    //TODO salt
+    args: [owner, BigInt(8)],
     value: parseEther("0.1"),
   });
 

@@ -7,6 +7,7 @@ async function main() {
   const Factory = await ethers.deployContract("AoWAccountFactory", [
     a.EntryPoint,
     a.AoWNFT,
+    a.AoWBattle,
   ]);
 
   await Factory.waitForDeployment();

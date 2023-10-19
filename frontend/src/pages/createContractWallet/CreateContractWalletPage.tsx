@@ -37,7 +37,7 @@ const createContract = async (owner: SmartAccountSigner) => {
       new SimpleSmartContractAccount({
         entryPointAddress: addresses.EntryPointAddress,
         chain: chain,
-        factoryAddress: addresses.SimpleAccountFactoryAddress,
+        factoryAddress: addresses.AccountFactoryAddress,
         rpcClient,
         owner,
       })
@@ -84,7 +84,7 @@ const registerSessionkey = async (owner: SmartAccountSigner) => {
       new SimpleSmartContractAccount({
         entryPointAddress: addresses.EntryPointAddress,
         chain: chain,
-        factoryAddress: addresses.SimpleAccountFactoryAddress,
+        factoryAddress: addresses.AccountFactoryAddress,
         rpcClient,
         owner,
       })
@@ -119,7 +119,7 @@ const revokeSessionkey = async (owner: SmartAccountSigner) => {
       new SimpleSmartContractAccount({
         entryPointAddress: addresses.EntryPointAddress,
         chain: chain,
-        factoryAddress: addresses.SimpleAccountFactoryAddress,
+        factoryAddress: addresses.AccountFactoryAddress,
         rpcClient,
         owner,
       })
@@ -154,7 +154,7 @@ const mintBySessionkey = async (owner: SmartAccountSigner) => {
       new SimpleSmartContractAccount({
         entryPointAddress: addresses.EntryPointAddress,
         chain: chain,
-        factoryAddress: addresses.SimpleAccountFactoryAddress,
+        factoryAddress: addresses.AccountFactoryAddress,
         rpcClient,
         owner,
       })
