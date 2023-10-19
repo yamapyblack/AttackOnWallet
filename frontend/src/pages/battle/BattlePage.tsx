@@ -44,9 +44,7 @@ export function BattlePage() {
     eventName: "Joined",
     listener(logs) {
       console.log("Joined", logs);
-
       console.log("Joined data", logs[0]?.data);
-
       const _battleId = (logs as Joined)[0]?.args?._battleId;
       console.log("_battleId:", _battleId);
     },
@@ -107,12 +105,6 @@ export function BattlePage() {
       return true;
     }
     return false;
-  };
-
-  const handleSkillWrapper = (skill: Skills) => {
-    handleSkill(skill).catch((error: Error) => {
-      console.error("Error handling skill:", error);
-    });
   };
 
   const handleSkill = async (skill: Skills) => {
@@ -217,46 +209,20 @@ export function BattlePage() {
           <Flex border="1.5px black solid" mt={10} borderRadius={6}>
             <Box border="1px black solid" borderRadius={4} w={200}>
               <Box p={6}>
-                <Text
-                  onClick={() => {
-                    handleSkill(Skills.Attack).catch((error: Error) => {
-                      console.error("Error handling skill:", error);
-                    });
-                  }}
-                  p={1}
-                >
-                  Attack
-                </Text>
-                <Text
-                  onClick={() => {
-                    handleSkill(Skills.Magic).catch((error: Error) => {
-                      console.error("Error handling skill:", error);
-                    });
-                  }}
-                  p={1}
-                >
-                  Magic
-                </Text>
-                <Text
-                  onClick={() => {
-                    handleSkill(Skills.Heal).catch((error: Error) => {
-                      console.error("Error handling skill:", error);
-                    });
-                  }}
-                  p={1}
-                >
-                  Heal
-                </Text>
-                <Text
-                  onClick={() => {
-                    handleSkill(Skills.Defend).catch((error: Error) => {
-                      console.error("Error handling skill:", error);
-                    });
-                  }}
-                  p={1}
-                >
-                  Defend
-                </Text>
+                {/* Commands */}
+                {Object.values(Skills).map((skill) => (
+                  <Text
+                    p={1}
+                    key={skill}
+                    onClick={() => {
+                      handleSkill(skill).catch((error: Error) => {
+                        console.error(`Error handling ${skill} skill:`, error);
+                      });
+                    }}
+                  >
+                    {skill}
+                  </Text>
+                ))}
               </Box>
             </Box>
           </Flex>
