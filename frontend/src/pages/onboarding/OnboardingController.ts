@@ -226,7 +226,8 @@ const onboardingStepHandlers: Record<
     localSmartContractStore.addSmartContractAccount(
       inMemOwnerAddress,
       context.smartAccountAddress,
-      context.chain?.id!
+      context.chain?.id!,
+      1 //salt
     );
     return {
       nextStep: OnboardingStepIdentifier.DONE,

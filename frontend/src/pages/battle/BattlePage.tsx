@@ -16,7 +16,7 @@ import { getAddresses } from "~/common/getAddresses";
 import { type Log, encodeFunctionData } from "viem";
 import { BattleStart } from "./BattleStart";
 import { daappConfigurations } from "../../configs/clientConfigs";
-import { sessionKeyStore } from "~/utils/localStorage";
+import { sessionKeyStore, localSmartContractStore } from "~/utils/localStorage";
 
 import {
   useContractEvent,
@@ -99,6 +99,13 @@ export function BattlePage() {
     const addresses = getAddresses(chain?.id!)!;
     const rpcUrl = daappConfigurations[chain?.id]!.rpcUrl;
 
+    const ownerAddress = await owner.getAddress();
+    const salt = localSmartContractStore.smartAccountAddresses(
+      ownerAddress as string,
+      chain?.id
+    )?.salt;
+    console.log("salt: ", salt);
+
     // 2. initialize the provider and connect it to the account
     const provider = new SmartAccountProvider(
       rpcUrl,
@@ -112,7 +119,7 @@ export function BattlePage() {
           factoryAddress: addresses.AccountFactoryAddress,
           rpcClient,
           owner,
-          index: BigInt(8), //salt
+          index: BigInt(salt!), //salt
         })
     );
 

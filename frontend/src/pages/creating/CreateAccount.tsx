@@ -18,6 +18,9 @@ export function CreateAccount() {
   const { chain } = useNetwork();
   const addresses = getAddresses(chain?.id!)!;
 
+  //TODO
+  const salt = 10;
+
   const {
     config,
     error: prepareError,
@@ -27,8 +30,7 @@ export function CreateAccount() {
     address: addresses.AccountFactoryAddress,
     abi: AoWAccountFactoryABI.abi,
     functionName: "createAccount",
-    //TODO salt
-    args: [owner, BigInt(8)],
+    args: [owner, BigInt(salt)],
     value: parseEther("0.1"),
   });
 
@@ -40,7 +42,8 @@ export function CreateAccount() {
       localSmartContractStore.addSmartContractAccount(
         owner as string,
         prepareData?.result as string,
-        chain?.id!
+        chain?.id!,
+        salt
       );
       //TODO next page
       router.reload();

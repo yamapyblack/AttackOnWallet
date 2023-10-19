@@ -2,33 +2,26 @@ const key = (address: string, chainId: number) =>
   `smartContractAccount-${address}-${chainId}`;
 
 const smartAccountAddresses = (address: string, chainId: number) => {
-  const scAddresses = JSON.parse(
-    localStorage.getItem(key(address, chainId)) ?? "[]"
-  );
-  return scAddresses;
+  const item = localStorage.getItem(key(address, chainId));
+  if (!item) {
+    return;
+  }
+  return JSON.parse(item) as { scAddress: string; salt: number };
 };
 
 const addSmartContractAccount = (
   address: string,
   scAddress: string,
-  chainId: number
+  chainId: number,
+  salt: number
 ) => {
   const k = key(address, chainId);
-  const addresses = JSON.parse(localStorage.getItem(k) ?? "[]");
-  localStorage.setItem(k, JSON.stringify([...addresses, scAddress]));
+  localStorage.setItem(k, JSON.stringify({ scAddress: scAddress, salt: salt }));
 };
 
-const removeSmartContractAccount = (
-  address: string,
-  scAddress: string,
-  chainId: number
-) => {
+const removeSmartContractAccount = (address: string, chainId: number) => {
   const k = key(address, chainId);
-  const scAddresses = JSON.parse(localStorage.getItem(k) ?? "[]");
-  if (!scAddresses.includes(scAddress)) {
-    scAddresses.splice(scAddresses.indexOf(scAddress), 1);
-    localStorage.setItem(k, JSON.stringify([...scAddresses, scAddress]));
-  }
+  localStorage.removeItem(k);
 };
 
 export const localSmartContractStore = {

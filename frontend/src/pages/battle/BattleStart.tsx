@@ -22,7 +22,7 @@ import {
   getUserOperationHash,
   type UserOperationRequest,
 } from "@alchemy/aa-core";
-import { sessionKeyStore } from "~/utils/localStorage";
+import { sessionKeyStore, localSmartContractStore } from "~/utils/localStorage";
 
 const RpcUrl = daappConfigurations[optimismGoerli.id]!.rpcUrl;
 
@@ -30,6 +30,13 @@ export function BattleStart() {
   const registerSessionkey = async (owner: SmartAccountSigner) => {
     const chain: Chain = optimismGoerli;
     const addresses = getAddresses(chain?.id!)!;
+    const ownerAddress = await owner.getAddress();
+
+    const salt = localSmartContractStore.smartAccountAddresses(
+      ownerAddress as string,
+      chain?.id
+    )?.salt;
+    console.log("salt: ", salt);
 
     // 2. initialize the provider and connect it to the account
     const provider = new SmartAccountProvider(
@@ -44,7 +51,7 @@ export function BattleStart() {
           factoryAddress: addresses.AccountFactoryAddress,
           rpcClient,
           owner,
-          index: BigInt(8), //salt
+          index: BigInt(salt!), //salt
         })
     );
 

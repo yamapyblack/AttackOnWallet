@@ -21,7 +21,7 @@ export type AppState =
   | {
       state: "HAS_SCW";
       eoaAddress: string;
-      scwAddresses: string[];
+      scwAddresses: string;
     };
 
 export function useAppState(): AppState {
@@ -46,17 +46,17 @@ export function useAppState(): AppState {
       address,
       chainId
     );
-    if (scwAddresses.length === 0) {
+    if (!scwAddresses) {
       setState({
         state: "NO_SCW",
-        eoaAddress: address as `0x${string}`,
+        eoaAddress: address,
         scwAddresses: undefined,
       });
     } else {
       setState({
         state: "HAS_SCW",
-        eoaAddress: address as `0x${string}`,
-        scwAddresses: scwAddresses,
+        eoaAddress: address,
+        scwAddresses: scwAddresses.scAddress,
       });
     }
   }, [address, isConnected, chainId]);
