@@ -12,14 +12,13 @@ import { useRouter } from "next/router";
 import { getAddresses } from "../../common/getAddresses";
 import { AoWAccountFactoryABI } from "../../common/aowAccountFactoryAbi";
 
+const salt = Math.floor(Math.random() * 256) + 1;
+
 export function CreateAccount() {
   const router = useRouter();
   const { address: owner } = useAccount();
   const { chain } = useNetwork();
   const addresses = getAddresses(chain?.id!)!;
-
-  //TODO
-  const salt = 10;
 
   const {
     config,
@@ -45,7 +44,7 @@ export function CreateAccount() {
         chain?.id!,
         salt
       );
-      //TODO next page
+      //Goto next page
       router.reload();
     },
   });

@@ -1,15 +1,12 @@
-import { Button, Text, Box } from "@chakra-ui/react";
+import { Button, Box } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSimpleAccountSigner } from "~/utils/simpleAccountSigner";
 
-import { type Chain } from "wagmi";
-import { encodeFunctionData, type Hash } from "viem";
+import { encodeFunctionData } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-
-const privateKey = generatePrivateKey();
 import { SessionKeyAccountABI } from "~/common/sessionKeyAccountAbi";
+import { useNetwork, type Chain } from "wagmi";
 
-import { optimismGoerli } from "viem/chains";
 import { daappConfigurations } from "../../configs/clientConfigs";
 import { getAddresses } from "../../common/getAddresses";
 
@@ -17,20 +14,17 @@ import {
   SimpleSmartContractAccount,
   SmartAccountProvider,
   type SmartAccountSigner,
-  LocalAccountSigner,
-  deepHexlify,
-  getUserOperationHash,
-  type UserOperationRequest,
 } from "@alchemy/aa-core";
 import { sessionKeyStore, localSmartContractStore } from "~/utils/localStorage";
 
-const RpcUrl = daappConfigurations[optimismGoerli.id]!.rpcUrl;
-
 export function BattleStart() {
-  const registerSessionkey = async (owner: SmartAccountSigner) => {
-    const chain: Chain = optimismGoerli;
+  const registerSessionkey = async (
+    owner: SmartAccountSigner,
+    chain: Chain
+  ) => {
     const addresses = getAddresses(chain?.id!)!;
     const ownerAddress = await owner.getAddress();
+    const rpcUrl = daappConfigurations[chain?.id]!.rpcUrl;
 
     const salt = localSmartContractStore.smartAccountAddresses(
       ownerAddress as string,
@@ -40,9 +34,9 @@ export function BattleStart() {
 
     // 2. initialize the provider and connect it to the account
     const provider = new SmartAccountProvider(
-      RpcUrl,
+      rpcUrl,
       addresses.EntryPointAddress,
-      optimismGoerli // chain
+      chain
     ).connect(
       (rpcClient) =>
         new SimpleSmartContractAccount({
@@ -79,8 +73,8 @@ export function BattleStart() {
   };
 
   const [isSessionKey, setIsSessionKey] = useState(false);
-
   const ownerResult = useSimpleAccountSigner();
+  const { chain } = useNetwork();
   // const { isConnected } = useAccount();
   // if (isConnected && ) {
   if (!isSessionKey && !ownerResult.isLoading) {
@@ -96,7 +90,7 @@ export function BattleStart() {
             fontSize={60}
             fontWeight="bold"
             onClick={() => {
-              registerSessionkey(ownerResult.owner).catch((e) => {
+              registerSessionkey(ownerResult.owner, chain).catch((e) => {
                 console.error(e);
               });
             }}
