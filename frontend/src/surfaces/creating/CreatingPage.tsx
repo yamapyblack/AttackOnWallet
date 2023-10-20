@@ -52,67 +52,52 @@ import { CreateAccount } from "./CreateAccount";
 export function CreatingPage() {
   const { isConnected } = useAccount();
   const ownerResult = useSimpleAccountSigner();
+  const status = [
+    { HP: 100 },
+    { AT: Math.floor(Math.random() * 100) + 1 },
+    { DF: Math.floor(Math.random() * 100) + 1 },
+    { MA: Math.floor(Math.random() * 100) + 1 },
+    { MD: Math.floor(Math.random() * 100) + 1 },
+    { SP: Math.floor(Math.random() * 100) + 1 },
+  ];
+  const names = [
+    "Alice",
+    "Bob",
+    "Charlie",
+    "Dave",
+    "Eve",
+    "Faythe",
+    "Grace",
+    "Heidi",
+    "Ivan",
+    "Judy",
+    "Mallory",
+    "Oscar",
+    "Peggy",
+    "Trent",
+    "Walter",
+  ];
+  const name = names[Math.floor(Math.random() * names.length)];
   if (isConnected && !ownerResult.isLoading) {
     return (
       <VStack>
-        <Text fontSize={30} textAlign="center">
-          Click below to mint and get started!!
-        </Text>
         <Text mt={6} fontSize={32} textAlign="center">
-          yamapy
+          {name}
         </Text>
         <Flex mt={4} justify="center">
           <Image alt="pokemon" w={300} src="/noun.png" />
         </Flex>
         <Box mt={4} mb={4}>
-          <Flex w={300} justifyContent="between">
-            <Box w={10}>
-              <Text>HP</Text>
-            </Box>
-            <Box pt={2} w={260}>
-              <Progress size="sm" value={50} />
-            </Box>
-          </Flex>
-          <Flex w={300} justifyContent="between">
-            <Box w={10}>
-              <Text>HP</Text>
-            </Box>
-            <Box pt={2} w={260}>
-              <Progress size="sm" value={50} />
-            </Box>
-          </Flex>
-          <Flex w={300} justifyContent="between">
-            <Box w={10}>
-              <Text>HP</Text>
-            </Box>
-            <Box pt={2} w={260}>
-              <Progress size="sm" value={50} />
-            </Box>
-          </Flex>
-          <Flex w={300} justifyContent="between">
-            <Box w={10}>
-              <Text>HP</Text>
-            </Box>
-            <Box pt={2} w={260}>
-              <Progress size="sm" value={50} />
-            </Box>
-          </Flex>
-          <Flex w={300} justifyContent="between">
-            <Box w={10}>
-              <Text>HP</Text>
-            </Box>
-            <Box pt={2} w={260}>
-              <Progress size="sm" value={50} />
-            </Box>
-          </Flex>
-          <Flex w={300} justifyContent="between">
-            <Box w={10}>
-              <Text>HP</Text>
-            </Box>
-            <Box pt={2} w={260}>
-              <Progress size="sm" value={50} />
-            </Box>
-          </Flex>
+          {status.map((item, i) => (
+            <Flex w={300} justifyContent="between" key={i}>
+              <Box w={10}>
+                <Text>{Object.keys(item)}</Text>
+              </Box>
+              <Box pt={2} w={260}>
+                <Progress size="sm" value={Object.values(item)[0] as number} />
+              </Box>
+            </Flex>
+          ))}
         </Box>
         <CreateAccount />
       </VStack>

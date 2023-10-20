@@ -413,6 +413,7 @@ export function BattlePage() {
                 {/* Commands */}
                 {Object.values(Skills).map((skill) => (
                   <Text
+                    _hover={{ cursor: "pointer" }}
                     p={1}
                     key={skill}
                     onClick={() => {
