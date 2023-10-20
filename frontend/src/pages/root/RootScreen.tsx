@@ -7,7 +7,6 @@ import { WalletContext } from "~/context/Wallet";
 import { OnboardingPage } from "../onboarding/OnboardingPage";
 import { CreateContractWalletPage } from "../createContractWallet/CreateContractWalletPage";
 import { CreatingPage } from "../creating/CreatingPage";
-import { ProfilePage } from "~/pages/profile/ProfilePage";
 import { BattlePage } from "~/pages/battle/BattlePage";
 import { ConnectPage } from "~/pages/connect/ConnectPage";
 import { LoadingScreen } from "../shared/LoadingScreen";

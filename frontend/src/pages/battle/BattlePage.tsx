@@ -334,7 +334,13 @@ export function BattlePage() {
 
   const ownerResult = useSimpleAccountSigner();
   const { state } = useAppState();
+  if (!ownerResult || ownerResult.isLoading) {
+    return null;
+  }
   if (state !== "HAS_SCW") {
+    return null;
+  }
+  if (chain === undefined) {
     return null;
   }
 
@@ -388,7 +394,7 @@ export function BattlePage() {
                   <Image alt="enemy pokemon" w="100%" src="/effect3.gif" />
                 </Box>
               )}
-              <Image alt="enemy pokemon" w="100%" src="/noun.png" />
+              <Image alt="enemy pokemon" w="100%" src="/noun2.png" />
             </VStack>
           </Flex>
           {/* Player */}
@@ -410,7 +416,7 @@ export function BattlePage() {
                     p={1}
                     key={skill}
                     onClick={() => {
-                      attack(ownerResult?.owner, skill, chain).catch(
+                      attack(ownerResult.owner, skill, chain).catch(
                         (error: Error) => {
                           console.error(
                             `Error handling ${skill} skill:`,

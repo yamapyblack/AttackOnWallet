@@ -82,6 +82,10 @@ export function BattleStart() {
   const { chain } = useNetwork();
   // const { isConnected } = useAccount();
   // if (isConnected && ) {
+  if (chain === undefined) {
+    return null;
+  }
+
   return (
     <>
       {!isSessionKey && !ownerResult.isLoading && (
