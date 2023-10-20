@@ -1,6 +1,7 @@
 import { Button, Box } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSimpleAccountSigner } from "~/utils/simpleAccountSigner";
+import { delay } from "~/utils/delay";
 
 import { encodeFunctionData } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
@@ -70,16 +71,20 @@ export function BattleStart() {
     });
     console.log("hash: ", hash);
     setIsSessionKey(true);
+    setDisplayGo(true);
+    await delay(1600);
+    setDisplayGo(false);
   };
 
   const [isSessionKey, setIsSessionKey] = useState(false);
+  const [displayGo, setDisplayGo] = useState(false);
   const ownerResult = useSimpleAccountSigner();
   const { chain } = useNetwork();
   // const { isConnected } = useAccount();
   // if (isConnected && ) {
-  if (!isSessionKey && !ownerResult.isLoading) {
-    return (
-      <>
+  return (
+    <>
+      {!isSessionKey && !ownerResult.isLoading && (
         <Box
           position="absolute"
           top="50%"
@@ -98,7 +103,19 @@ export function BattleStart() {
             Ready?
           </Button>
         </Box>
-      </>
-    );
-  }
+      )}
+      {displayGo && (
+        <Box
+          position="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+        >
+          <Box fontSize={60} fontWeight="bold">
+            Fight!
+          </Box>
+        </Box>
+      )}
+    </>
+  );
 }

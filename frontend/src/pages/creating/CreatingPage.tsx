@@ -56,10 +56,7 @@ export function CreatingPage() {
     return (
       <VStack>
         <Text fontSize={30} textAlign="center">
-          Click below to get started.
-          <br />
-          If you have a gas manager policy configured you can check the box
-          below.
+          Click below to mint and get started!!
         </Text>
         <Text mt={6} fontSize={32} textAlign="center">
           yamapy

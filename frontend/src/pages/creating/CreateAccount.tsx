@@ -13,6 +13,7 @@ import { getAddresses } from "../../common/getAddresses";
 import { AoWAccountFactoryABI } from "../../common/aowAccountFactoryAbi";
 
 const salt = Math.floor(Math.random() * 256) + 1;
+const mintETH = "0.02";
 
 export function CreateAccount() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export function CreateAccount() {
     abi: AoWAccountFactoryABI.abi,
     functionName: "createAccount",
     args: [owner, BigInt(salt)],
-    value: parseEther("0.1"),
+    value: parseEther(mintETH),
   });
 
   const { data, error, isError, write } = useContractWrite(config);
@@ -52,7 +53,7 @@ export function CreateAccount() {
   return (
     <VStack justify="center">
       <Button disabled={isLoading} onClick={() => write?.()}>
-        {isLoading ? "Minting..." : "Mint 0.1 ETH"}
+        {isLoading ? "Minting..." : `Mint ${mintETH} ETH`}
       </Button>
       {isSuccess && (
         <div>

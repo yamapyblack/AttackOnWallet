@@ -170,7 +170,7 @@ export function BattlePage() {
     const skillId = skill === Skills.Attack ? BigInt(1) : BigInt(2);
 
     //1. Send tx
-    await attackBySessionkey(owner, battleId, skillId, chain);
+    attackBySessionkey(owner, battleId, skillId, chain);
     // const { request } = await prepareWriteContract({
     //   address: addresses.AoWBattle,
     //   abi: AoWBattleABI.abi,
@@ -181,23 +181,23 @@ export function BattlePage() {
     // console.log("hash", hash);
 
     //2. Occur effect
+    setPlayerImagePosition(15);
+    await delay(200);
+    setPlayerImagePosition(0);
+    await delay(400);
     if (skill === Skills.Attack) {
-      setPlayerImagePosition(15);
-      await delay(300);
-      setPlayerImagePosition(0);
-      await delay(400);
-      setEnemyBlinking(true);
-      await delay(2000);
-      setEnemyBlinking(false);
+      setIsAttackEffect(true);
+      await delay(3000);
+      setIsAttackEffect(false);
     } else if (skill === Skills.Magic) {
       setIsMagicEffect(true);
-      await delay(1000);
+      await delay(2600);
       setIsMagicEffect(false);
-      await delay(400);
-      setEnemyBlinking(true);
-      await delay(2000);
-      setEnemyBlinking(false);
     }
+    await delay(500);
+    setEnemyBlinking(true);
+    await delay(2000);
+    setEnemyBlinking(false);
 
     //3. Set endPlayerAttack
     setEndPlayerAttack(true);
@@ -233,6 +233,7 @@ export function BattlePage() {
   const [isWindowWaving, setWindowWaving] = useState(false);
   const [playerImagePosition, setPlayerImagePosition] = useState(0);
   const [enemyImagePosition, setEnemyImagePosition] = useState(0);
+  const [isAttackEffect, setIsAttackEffect] = useState(false);
   const [isMagicEffect, setIsMagicEffect] = useState(false);
   const [attackedLogs, setAttackedLogs] = useState<Log[]>();
 
@@ -374,8 +375,15 @@ export function BattlePage() {
               animation={isEnemyBlinking ? "blinking 0.5s 2" : "none"}
             >
               {/* Explosion Effect */}
+              {isAttackEffect && (
+                <Box position="absolute">
+                  <Image alt="enemy pokemon" w="100%" src="/effect2.gif" />
+                </Box>
+              )}
               {isMagicEffect && (
-                <Box top={10} className="explosion explosion-animation"></Box>
+                <Box position="absolute">
+                  <Image alt="enemy pokemon" w="100%" src="/effect3.gif" />
+                </Box>
               )}
               <Image alt="enemy pokemon" w="100%" src="/noun.png" />
             </VStack>
