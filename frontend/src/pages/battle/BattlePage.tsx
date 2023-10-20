@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import {
   Button,
   Text,
@@ -74,6 +75,7 @@ function HpComponent({ name, hp }: { name: string; hp: number }) {
 }
 
 export function BattlePage() {
+  const router = useRouter();
   //---------------------- Actions ----------------------
   const join = async () => {
     const { request } = await prepareWriteContract({
@@ -88,6 +90,8 @@ export function BattlePage() {
     await waitForTransaction({
       hash: hash,
     });
+    //Reload
+    router.reload();
   };
 
   const attackBySessionkey = async (
@@ -337,7 +341,6 @@ export function BattlePage() {
   //---------------------- Rendering ----------------------
   return (
     <>
-      <Button onClick={join}>Join</Button>
       {enemyHP <= 0 && playerHP > 0 && (
         <Box
           position="absolute"
@@ -345,7 +348,7 @@ export function BattlePage() {
           left="50%"
           transform="translate(-50%, -50%)"
         >
-          <Text fontSize={120} fontWeight="bold" zIndex={1}>
+          <Text fontSize={120} fontWeight="bold" zIndex={1} onClick={join}>
             WIN
           </Text>
         </Box>
