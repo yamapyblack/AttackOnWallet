@@ -1,7 +1,7 @@
 import { Button, Heading, VStack } from "@chakra-ui/react";
 import { useAccount, type Chain } from "wagmi";
 import { useSimpleAccountSigner } from "~/utils/simpleAccountSigner";
-import { LoadingScreen } from "~/pages/shared/LoadingScreen";
+import { LoadingScreen } from "~/surfaces/shared/LoadingScreen";
 import { encodeFunctionData, type Hash } from "viem";
 import { NFTContractABI } from "../../common/nftContractAbi";
 import { SessionKeyAccountABI } from "~/common/sessionKeyAccountAbi";

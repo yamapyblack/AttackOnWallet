@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 import { memo, useState } from "react";
 import { useAccount } from "wagmi";
 import { useSimpleAccountSigner } from "~/utils/simpleAccountSigner";
-import { LoadingScreen } from "~/pages/shared/LoadingScreen";
+import { LoadingScreen } from "~/surfaces/shared/LoadingScreen";
 import { queryClient } from "../../utils/query";
 import { useOnboardingOrchestrator } from "./OnboardingController";
 import { OnboardingStepIdentifier } from "./OnboardingDataModels";
