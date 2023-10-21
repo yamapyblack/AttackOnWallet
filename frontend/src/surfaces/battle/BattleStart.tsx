@@ -56,9 +56,11 @@ export function BattleStart() {
     //Set session key
     const privateSessionKey = generatePrivateKey();
     const sessionKey = privateKeyToAccount(privateSessionKey).address;
-    console.log("privateSessionKey: ", privateSessionKey);
     console.log("sessionKey: ", sessionKey);
     sessionKeyStore.setPrivateSessionKey(privateSessionKey);
+
+    // Current current timestamp + 1200 (= 10 minute x 2 second)
+    const until = Math.floor(Date.now() / 1000) + 1200;
 
     const hash = await provider.sendTransaction({
       from: await owner.getAddress(),
@@ -66,7 +68,7 @@ export function BattleStart() {
       data: encodeFunctionData({
         abi: SessionKeyAccountABI.abi,
         functionName: "registerSessionKey",
-        args: [sessionKey, 0, 1796926626],
+        args: [sessionKey, 0, until],
       }),
     });
     console.log("hash: ", hash);
