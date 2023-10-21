@@ -8,14 +8,7 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
-    MUMBAI_ALCHEMY_API_URL: z.string().url(),
-    SEPOLIA_ALCHEMY_API_URL: z.string().url(),
-    POLYGON_ALCHEMY_API_URL: z.string().url(),
-    ARB_ALCHEMY_API_URL: z.string().url(),
-    OPT_ALCHEMY_API_URL: z.string().url(),
     OPT_GOERLI_ALCHEMY_API_URL: z.string().url(),
-    BASE_ALCHEMY_API_URL: z.string().url(),
-    BASE_GOERLI_ALCHEMY_API_URL: z.string().url(),
   },
 
   /**
@@ -25,13 +18,6 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_OPT_GOERLI_POLICY_ID: z.string(),
-    NEXT_PUBLIC_OPT_POLICY_ID: z.string(),
-    NEXT_PUBLIC_ARB_POLICY_ID: z.string(),
-    NEXT_PUBLIC_POLYGON_POLICY_ID: z.string(),
-    NEXT_PUBLIC_SEPOLIA_POLICY_ID: z.string(),
-    NEXT_PUBLIC_MUMBAI_POLICY_ID: z.string(),
-    NEXT_PUBLIC_BASE_POLICY_ID: z.string(),
-    NEXT_PUBLIC_BASE_GOERLI_POLICY_ID: z.string(),
   },
 
   /**
@@ -40,21 +26,8 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    POLYGON_ALCHEMY_API_URL: process.env.POLYGON_ALCHEMY_API_URL,
-    ARB_ALCHEMY_API_URL: process.env.ARB_ALCHEMY_API_URL,
-    MUMBAI_ALCHEMY_API_URL: process.env.MUMBAI_ALCHEMY_API_URL,
-    SEPOLIA_ALCHEMY_API_URL: process.env.SEPOLIA_ALCHEMY_API_URL,
-    OPT_ALCHEMY_API_URL: process.env.OPT_ALCHEMY_API_URL,
     OPT_GOERLI_ALCHEMY_API_URL: process.env.OPT_GOERLI_ALCHEMY_API_URL,
-    BASE_ALCHEMY_API_URL: process.env.BASE_ALCHEMY_API_URL,
-    BASE_GOERLI_ALCHEMY_API_URL: process.env.BASE_GOERLI_ALCHEMY_API_URL,
-    NEXT_PUBLIC_OPT_GOERLI_POLICY_ID: process.env.NEXT_PUBLIC_OPT_GOERLI_POLICY_ID,
-    NEXT_PUBLIC_OPT_POLICY_ID: process.env.NEXT_PUBLIC_OPT_POLICY_ID,
-    NEXT_PUBLIC_ARB_POLICY_ID: process.env.NEXT_PUBLIC_ARB_POLICY_ID,
-    NEXT_PUBLIC_POLYGON_POLICY_ID: process.env.NEXT_PUBLIC_POLYGON_POLICY_ID,
-    NEXT_PUBLIC_SEPOLIA_POLICY_ID: process.env.NEXT_PUBLIC_SEPOLIA_POLICY_ID,
-    NEXT_PUBLIC_MUMBAI_POLICY_ID: process.env.NEXT_PUBLIC_MUMBAI_POLICY_ID,
-    NEXT_PUBLIC_BASE_POLICY_ID: process.env.NEXT_PUBLIC_BASE_POLICY_ID,
-    NEXT_PUBLIC_BASE_GOERLI_POLICY_ID: process.env.NEXT_PUBLIC_BASE_GOERLI_POLICY_ID,
+    NEXT_PUBLIC_OPT_GOERLI_POLICY_ID:
+      process.env.NEXT_PUBLIC_OPT_GOERLI_POLICY_ID,
   },
 });
