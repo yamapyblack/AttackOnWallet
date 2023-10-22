@@ -1,7 +1,8 @@
 {
-  "name": "alchemy-daapp",
+  "name": "attack-on-wallet",
   "version": "0.1.0",
-  "private": true,
+  "author": "@yamapyblack",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
