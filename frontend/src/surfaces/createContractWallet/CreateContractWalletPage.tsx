@@ -201,9 +201,6 @@ const mintBySessionkey = async (owner: SmartAccountSigner) => {
 };
 
 export function CreateContractWalletPage() {
-  //This file is sample and not used
-  return;
-
   const { isConnected } = useAccount();
   const ownerResult = useSimpleAccountSigner();
   if (isConnected && !ownerResult.isLoading) {

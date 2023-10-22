@@ -11,7 +11,7 @@ import { useAccount, type Chain } from "wagmi";
 import { useSimpleAccountSigner } from "~/utils/simpleAccountSigner";
 import { LoadingScreen } from "~/surfaces/shared/LoadingScreen";
 import { CreateAccount } from "./CreateAccount";
-import { PlayerImage } from "~/utils/playerImage";
+import { PlayerImage } from "~/utils/PlayerImage";
 
 const names = [
   "Alice",

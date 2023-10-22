@@ -16,7 +16,7 @@ import { AoWBattleABI } from "../../common/aowBattleAbi";
 import { getAddresses } from "~/common/getAddresses";
 import { type Log, encodeFunctionData } from "viem";
 import { BattleStart } from "./BattleStart";
-import { PlayerImage } from "~/utils/playerImage";
+import { PlayerImage } from "~/utils/PlayerImage";
 import { daappConfigurations } from "../../configs/clientConfigs";
 import { sessionKeyStore, localSmartContractStore } from "~/utils/localStorage";
 
