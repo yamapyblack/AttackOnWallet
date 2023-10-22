@@ -10,82 +10,67 @@ import {
 import { useAccount, type Chain } from "wagmi";
 import { useSimpleAccountSigner } from "~/utils/simpleAccountSigner";
 import { LoadingScreen } from "~/surfaces/shared/LoadingScreen";
-// import {
-//   SimpleSmartContractAccount,
-//   SmartAccountProvider,
-//   type SmartAccountSigner,
-// } from "@alchemy/aa-core";
 import { CreateAccount } from "./CreateAccount";
+import { PlayerImage } from "~/utils/playerImage";
 
-// import { optimismGoerli } from "viem/chains";
-// import { daappConfigurations } from "../../configs/clientConfigs";
+const names = [
+  "Alice",
+  "Bob",
+  "Charlie",
+  "Dave",
+  "Eve",
+  "Faythe",
+  "Grace",
+  "Heidi",
+  "Ivan",
+  "Judy",
+  "Mallory",
+  "Oscar",
+  "Peggy",
+  "Trent",
+  "Walter",
+];
 
-// const RpcUrl = daappConfigurations[optimismGoerli.id]!.rpcUrl;
-// const EntryPointAddress = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
-// const AccountFactoryAddress = "0xc9966401164FEd576Bb9f56E67E87d98663FD5a2";
+function ethereumAddressToNumbers(address: string): number[] {
+  // アドレスをビット列に変換
+  const bits = BigInt("0x" + address.slice(2))
+    .toString(2)
+    .padStart(160, "0");
 
-// const createContract = async (owner: SmartAccountSigner) => {
-//   //owner from Private Key
-//   const chain: Chain = optimismGoerli;
+  // ビット列を 7 つのセグメントに分割
+  const segmentSize = Math.ceil(bits.length / 7);
+  const segments = Array.from({ length: 7 }, (_, i) =>
+    parseInt(bits.slice(i * segmentSize, (i + 1) * segmentSize), 2)
+  );
 
-//   // 2. initialize the provider and connect it to the account
-//   const provider = new SmartAccountProvider(
-//     RpcUrl,
-//     EntryPointAddress,
-//     optimismGoerli // chain
-//   ).connect(
-//     (rpcClient) =>
-//       new SimpleSmartContractAccount({
-//         entryPointAddress: EntryPointAddress,
-//         chain: chain,
-//         factoryAddress: AccountFactoryAddress,
-//         rpcClient,
-//         owner,
-//         index: BigInt(1),
-//       })
-//   );
-
-//   const smartAccountAddress = await provider.getAddress();
-//   console.log("smartAccountAddress: ", smartAccountAddress);
-// };
+  // 各セグメントを 1 〜 100 の範囲に変換
+  return segments.map((segment) => (segment % 100) + 1);
+}
 
 export function CreatingPage() {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const ownerResult = useSimpleAccountSigner();
+
+  const numbers = ethereumAddressToNumbers(address as string);
+
+  const image = `https://noun.pics/${numbers[0]}.jpg`;
+  const name = names[numbers[1] ? numbers[1] % names.length : 0];
   const status = [
     { HP: 100 },
-    { AT: Math.floor(Math.random() * 100) + 1 },
-    { DF: Math.floor(Math.random() * 100) + 1 },
-    { MA: Math.floor(Math.random() * 100) + 1 },
-    { MD: Math.floor(Math.random() * 100) + 1 },
-    { SP: Math.floor(Math.random() * 100) + 1 },
+    { AT: numbers[2] },
+    { DF: numbers[3] },
+    { MA: numbers[4] },
+    { MD: numbers[5] },
+    { SP: numbers[6] },
   ];
-  const names = [
-    "Alice",
-    "Bob",
-    "Charlie",
-    "Dave",
-    "Eve",
-    "Faythe",
-    "Grace",
-    "Heidi",
-    "Ivan",
-    "Judy",
-    "Mallory",
-    "Oscar",
-    "Peggy",
-    "Trent",
-    "Walter",
-  ];
-  const name = names[Math.floor(Math.random() * names.length)];
   if (isConnected && !ownerResult.isLoading) {
     return (
       <VStack>
         <Text mt={6} fontSize={32} textAlign="center">
           {name}
         </Text>
-        <Flex mt={4} justify="center">
-          <Image alt="pokemon" w={300} src="/noun.png" />
+        <Flex mt={4} w={300} justify="center">
+          <PlayerImage />
         </Flex>
         <Box mt={4} mb={4}>
           {status.map((item, i) => (

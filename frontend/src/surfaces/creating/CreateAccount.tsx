@@ -13,7 +13,7 @@ import { getAddresses } from "../../common/getAddresses";
 import { AoWAccountFactoryABI } from "../../common/aowAccountFactoryAbi";
 
 const salt = Math.floor(Math.random() * 256) + 1;
-const mintETH = "0.02";
+const mintETH = "0.01";
 
 export function CreateAccount() {
   const router = useRouter();

@@ -16,6 +16,7 @@ import { AoWBattleABI } from "../../common/aowBattleAbi";
 import { getAddresses } from "~/common/getAddresses";
 import { type Log, encodeFunctionData } from "viem";
 import { BattleStart } from "./BattleStart";
+import { PlayerImage } from "~/utils/playerImage";
 import { daappConfigurations } from "../../configs/clientConfigs";
 import { sessionKeyStore, localSmartContractStore } from "~/utils/localStorage";
 
@@ -400,7 +401,7 @@ export function BattlePage() {
           {/* Player */}
           <Flex alignItems="flex-end" mt={-10}>
             <Box w={240} transform={`translateX(${playerImagePosition}px)`}>
-              <Image alt="player pokemon" w="100%" src="/noun.png" />
+              <PlayerImage />
             </Box>
             <Box ml={10}>
               <HpComponent name="You" hp={playerHP} />
