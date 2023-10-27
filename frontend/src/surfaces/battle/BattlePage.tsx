@@ -44,8 +44,6 @@ import {
 enum Skills {
   Attack = "Attack",
   Magic = "Magic",
-  Heal = "Heal",
-  Defend = "Defend",
 }
 
 type Attacked = Log & {
